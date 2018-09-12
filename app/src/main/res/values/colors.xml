@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ee605b</color>
+    <color name="colorPrimaryDark">#f5d9d7</color>
+    <color name="colorAccent">#faa0a0</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+
+    <color name="hodoo_background_color">#f7f7f7</color>
+    <color name="hodoo_pink">#ee605b</color>
+    <color name="hodoo_midle_pink">#ed6154</color>
+    <color name="hodoo_light_pink">#f5d9d7</color>
+    <color name="hodoo_light_light_pink">#f8dadc</color>
+    <color name="hodoo_light_message_pink">#fbe7e8</color>
+    <color name="hodoo_text_black">#393939</color>
+    <color name="hodoo_text_gray">#595959</color>
+    <color name="hodoo_text_light_gray">#c3c3c3</color>
+    <color name="hodoo_gray">#e5e5e5</color>
+
+</resources>

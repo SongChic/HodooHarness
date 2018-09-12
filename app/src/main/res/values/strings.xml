@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">HodooHarness</string>
+    <string name="gps_permission_info">
+        GPS 권한을 허용해야 사용할 수 있습니다.
+    </string>
+
+    <string name="confirm">확인</string>
+    <string name="cancle">취소</string>
+    <string name="title_activity_gps">GPSActivity</string>
+</resources>

@@ -1,0 +1,67 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/hodoo_midle_pink</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Edittext">
+        <item name="android:background">@drawable/edittext_border</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_width">325dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="Edittext.Email">
+        <item name="android:inputType">textEmailAddress</item>
+    </style>
+
+    <style name="Edittext.Password">
+        <item name="android:inputType">textPassword</item>
+        <item name="android:imeActionId">6</item>
+        <item name="android:imeOptions">actionUnspecified</item>
+    </style>
+
+    <style name="CommonBtn">
+        <item name="android:layout_width">300dp</item>
+        <item name="android:layout_height">55dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:background">@drawable/common_large_btn</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <!--<EditText android:background="@drawable/edittext_border"
+        android:drawableRight="@drawable/edit_text_failed_drwable_left"
+        android:hint="@string/prompt_email"
+        android:id="@+id/email"
+        android:inputType="textEmailAddress"
+        android:layout_height="45dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_width="match_parent"
+        android:maxLines="1"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:text="@={user.email}"
+        tools:errorMsg="@{errorMsg}"
+        tools:rule="@{emailRule}" />-->
+
+
+</resources>
