@@ -3,7 +3,7 @@
     <data>
         <variable
             name="activity"
-            type="com.animal.harness.hodoo.hodooharness.activity.GPSActivity"/>
+            type="com.animal.harness.hodoo.hodooharness.activity.gps.GPSActivity"/>
         <variable
             name="gps"
             type="com.animal.harness.hodoo.hodooharness.domain.GPSData"/>
@@ -44,15 +44,19 @@
                     android:layout_height="wrap_content"
                     />
             </LinearLayout>
-            <ListView
-                android:id="@+id/data_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
 
         </LinearLayout>
 
+        <ScrollView
+            android:layout_above="@+id/btn_wrap"
+            android:layout_below="@+id/gps_monitor"
+            android:id="@+id/data_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
         <LinearLayout
+            android:id="@+id/btn_wrap"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -88,6 +92,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="보기"
+                android:onClick="@{activity::onClick}"
+                />
+            <Button
+                android:id="@+id/move"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="이동"
                 android:onClick="@{activity::onClick}"
                 />
 

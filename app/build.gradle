@@ -36,4 +36,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    /* util 라이브러리 관련 (s) */
+    implementation 'com.ssomai:android.scalablelayout:2.1.6'
+    implementation group: 'com.google.api.client', name: 'google-api-client-util', version: '1.2.3-alpha'
+
+    /* util 라이브러리 관련 (e) */
 }

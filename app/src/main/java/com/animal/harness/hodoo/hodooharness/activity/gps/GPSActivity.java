@@ -1,7 +1,8 @@
-package com.animal.harness.hodoo.hodooharness.activity;
+package com.animal.harness.hodoo.hodooharness.activity.gps;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.location.Location;
@@ -11,28 +12,35 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.animal.harness.hodoo.hodooharness.R;
-import com.animal.harness.hodoo.hodooharness.adapter.GPSDataAdapter;
+import com.animal.harness.hodoo.hodooharness.activity.chart.ChartActivity;
+import com.animal.harness.hodoo.hodooharness.adapter.GPSCustomAdapter;
 import com.animal.harness.hodoo.hodooharness.base.BaseActivity;
 import com.animal.harness.hodoo.hodooharness.constant.HodooConstant;
 import com.animal.harness.hodoo.hodooharness.databinding.ActivityGpsBinding;
 import com.animal.harness.hodoo.hodooharness.domain.GPSData;
 import com.animal.harness.hodoo.hodooharness.util.DBHelper;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.animal.harness.hodoo.hodooharness.constant.HodooConstant.LOCATION_DB_NAME;
 
 public class GPSActivity extends BaseActivity<GPSActivity> {
     private final String mStatusPrefix = "상태 : ";
+    private final boolean resetState = false;
 
     /* Data */
     private ActivityGpsBinding binding;
     private DBHelper dbHelper;
+    private GPSCustomAdapter adapter;
 
     /* GPS */
     private LocationManager locationManager;
@@ -43,7 +51,7 @@ public class GPSActivity extends BaseActivity<GPSActivity> {
     /* View */
     private TextView mTotalDistance;
     private TextView mGpsStatus;
-    private ListView databaseView;
+    private ScrollView databaseView;
 
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
@@ -90,6 +98,8 @@ public class GPSActivity extends BaseActivity<GPSActivity> {
                 null,
                 1
         );
+        if (resetState) dbHelper.resetDB();
+
         mTotalDistance = binding.totalDistance;
         mGpsStatus = binding.gpsStatus;
         databaseView = binding.dataView;
@@ -121,11 +131,10 @@ public class GPSActivity extends BaseActivity<GPSActivity> {
                 data = GPSData.builder()
                         .lat(lat)
                         .lon(lon)
+                        .created(new Date().getTime())
                         .build();
                 mOldLat = lat;
                 mOldLon = lon;
-
-
 
                 binding.setGps(data);
             }
@@ -141,6 +150,7 @@ public class GPSActivity extends BaseActivity<GPSActivity> {
         mOldLon = location.getLongitude();
         data.setSum(0);
         mTotalDistance.setText("");
+        dbHelper.resetDB();
     }
 
     public void calculation( Location location ) {
@@ -152,29 +162,60 @@ public class GPSActivity extends BaseActivity<GPSActivity> {
         data.setCreated(new Date().getTime());
         data.setSum( data.getSum() + location.distanceTo(oldLocation) );
         binding.setGps(data);
+
+        if ( dbHelper != null && mOldLat != location.getLatitude() && mOldLon != location.getLongitude() )
+            dbHelper.insertDB(data);
+
         mOldLat = location.getLatitude();
         mOldLon = location.getLongitude();
         mTotalDistance.setText(String.format("총 이동거리 : %2fm", data.getSum()));
-        if ( dbHelper != null )
-            dbHelper.insertDB(data);
+
     }
     public void onClick( View view ) {
         switch (view.getId()) {
             case R.id.start :
                 startGPS();
+                if ( dbHelper != null )
+                    dbHelper.insertDB(data);
                 break;
             case R.id.stop :
                 stopGPS();
+                adapter = null;
                 break;
             case R.id.reset :
                 reset();
                 break;
             case R.id.view_data :
+                if ( databaseView.getChildCount() > 0 )
+                    databaseView.removeAllViews();
                 List<GPSData> data = dbHelper.selectDB();
-                GPSDataAdapter adapter = new GPSDataAdapter(data);
-                databaseView.setAdapter(adapter);
-                Log.e(TAG, "break");
+                Map<String, Object> sortMap = new HashMap<>();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+
+                for ( int i = 0; i < data.size(); i++ ) {
+                    if ( sortMap.containsKey( sdf.format(new Date(data.get(i).getCreated())) ) ) {
+                        ((List<GPSData>) sortMap.get( sdf.format(new Date(data.get(i).getCreated())) )).add(data.get(i));
+                    } else {
+                        List<GPSData> items = new ArrayList<>();
+                        items.add(data.get(i));
+                        sortMap.put(sdf.format(new Date(data.get(i).getCreated())), items);
+                    }
+                }
+
+                HashMap<String, Object> reversedHashMap = new HashMap<String, Object>();
+                for (String key : sortMap.keySet()){
+                    reversedHashMap.put(key, sortMap.get(key));
+                }
+
+                if ( adapter == null )
+                    adapter = new GPSCustomAdapter(this, reversedHashMap, databaseView);
+                else
+                    adapter.reset(databaseView);
+                break;
+            case R.id.move :
+                startActivity(new Intent(this, ChartActivity.class));
                 break;
         }
     }
+
 }

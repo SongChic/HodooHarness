@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 
 import com.animal.harness.hodoo.hodooharness.R;
@@ -15,6 +16,7 @@ import com.animal.harness.hodoo.hodooharness.R;
 public abstract class BaseActivity<D extends Activity> extends AppCompatActivity {
     protected final String TAG = getClass().getSimpleName();
     protected abstract BaseActivity<D> getActivityClass();
+
     public interface CustomCallback {
         void onClick(DialogInterface dialog, int which);
     }

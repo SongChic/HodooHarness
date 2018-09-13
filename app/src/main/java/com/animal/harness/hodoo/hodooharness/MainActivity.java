@@ -1,6 +1,5 @@
 package com.animal.harness.hodoo.hodooharness;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,14 +10,12 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.animal.harness.hodoo.hodooharness.activity.GPSActivity;
+import com.animal.harness.hodoo.hodooharness.activity.gps.GPSActivity;
 import com.animal.harness.hodoo.hodooharness.base.BaseActivity;
 import com.animal.harness.hodoo.hodooharness.util.DBHelper;
 
-import static com.animal.harness.hodoo.hodooharness.constant.HodooConstant.DEBUG;
 import static com.animal.harness.hodoo.hodooharness.constant.HodooConstant.LOCATION_DB_NAME;
 import static com.animal.harness.hodoo.hodooharness.constant.HodooConstant.PERMISSIONS;
 import static com.animal.harness.hodoo.hodooharness.constant.HodooConstant.PERMISSION_REQUEST_CODE;

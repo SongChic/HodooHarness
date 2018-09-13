@@ -63,6 +63,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(sql, null);
         while ( cursor.moveToNext() ) {
             GPSData data = new GPSData();
+            data.setId(cursor.getInt(0) );
             data.setLat( cursor.getDouble(1) );
             data.setLon( cursor.getDouble(2) );
             data.setCreated( cursor.getLong(3) );
@@ -70,5 +71,9 @@ public class DBHelper extends SQLiteOpenHelper {
             datas.add(data);
         }
         return datas;
+    }
+    public void resetDB() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("delete from " + mName);
     }
 }
