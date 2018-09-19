@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ViewTreeObserver;
 
 import com.animal.harness.hodoo.hodooharness.base.BaseView;
 import com.animal.harness.hodoo.hodooharness.domain.ChartData;
@@ -25,8 +26,11 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
     /* variable */
     private Context mContext;
     private int mDeviceWidth = 0;
-    private int mPadding = 100;
+    private int mPadding = 0;
     private Activity mActivity;
+
+    private int viewHeight = 0;
+    private int maxY = 0;
 
     /* data */
     List<ChartData> mDatas = new ArrayList<>();
@@ -60,12 +64,14 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
     }
 
     private void init() {
+        viewHeight = getHeight();
 
     }
     public void setmActivity( Activity activity ) {
         mActivity = activity;
     }
     public void start() {
+        Log.e(TAG, String.format("view height : %d", getMeasuredHeight() * 80 / 100));
         animator = new Thread(this);
         animator.start();
     }
@@ -85,19 +91,19 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
         Paint paint = new Paint();
         Path path = new Path();
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(0xff800000);
-        paint.setShader(new LinearGradient(0,0,0,600, Color.RED,0xffffffff, Shader.TileMode.CLAMP));
+        paint.setColor(Color.parseColor("#ee6156"));
+        paint.setShader(new LinearGradient(0,0,0,maxY + 500, Color.parseColor("#ee6156"),0xffffffff, Shader.TileMode.CLAMP));
         paint.setDither(true);                    // set the dither to true
         paint.setStyle(Paint.Style.FILL);       // set to STOKE
         paint.setStrokeJoin(Paint.Join.ROUND);    // set the join to round you want
         paint.setStrokeCap(Paint.Cap.ROUND);      // set the paint cap to round too
-        paint.setPathEffect(new CornerPathEffect(50) );   // set the path effect when they join.
+        paint.setPathEffect(new CornerPathEffect(200) );   // set the path effect when they join.
         paint.setAntiAlias(true);
-        path.moveTo(mPadding, 300 * mContext.getResources().getDisplayMetrics().density + 0.5f);
+        path.moveTo(mPadding, maxY);
         for (int i = 0; i < mBaseDatas.size(); i++){
             path.lineTo(mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY());
         }
-        path.lineTo(mBaseDatas.size() * 100, 300 * mContext.getResources().getDisplayMetrics().density + 0.5f);
+        path.lineTo(mBaseDatas.size() * x, maxY);
 
         canvas.drawPath(path, paint);
 
@@ -108,7 +114,7 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
         pointPaint.setStyle(Paint.Style.STROKE);
         pointPaint.setStrokeJoin(Paint.Join.ROUND);
         pointPaint.setStrokeCap(Paint.Cap.ROUND);
-        pointPaint.setStrokeWidth(20);
+        pointPaint.setStrokeWidth(30);
 
         Paint pointStrokePaint = new Paint();
         pointStrokePaint.setColor(Color.WHITE);
@@ -126,18 +132,22 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
     }
     public void setWidth( int width ) {
         mDeviceWidth = width;
+        maxY = getMeasuredHeight() - 200;
     }
 
-    public void setX( List<ChartData> datas) {
+    public void setX(final List<ChartData> datas) {
+        viewHeight = getHeight();
+        Log.e(TAG, String.format("viewHeight : %d", viewHeight));
+
         x = xWidth = (mDeviceWidth - mPadding) / datas.size();
         if ( mBaseDatas.size() == 0 ) {
-//            mBaseDatas = new ArrayList<>();
             for ( int i = 0; i < mDatas.size(); i++ ) {
                 if ( i == 0 ) {
-                    mBaseDatas.add(ChartData.builder().x(mPadding).y(300 * mContext.getResources().getDisplayMetrics().density + 0.5f).build());
+                    mBaseDatas.add(ChartData.builder().x(mPadding).y(maxY).build());
                 } else {
-                    mBaseDatas.add(ChartData.builder().x(x).y(300 * mContext.getResources().getDisplayMetrics().density + 0.5f).build());
+                    mBaseDatas.add(ChartData.builder().x(x).y(maxY).build());
                 }
+                mDatas.get(i).setY( maxY - ( maxY * (mDatas.get(i).getY() / maxY * 100) / 100 ) );
                 x += xWidth;
             }
         }
@@ -179,6 +189,7 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
 
             count--;
         }
+        animator.interrupt();
 
     }
 }

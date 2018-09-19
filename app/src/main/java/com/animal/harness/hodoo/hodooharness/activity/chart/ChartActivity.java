@@ -2,9 +2,9 @@ package com.animal.harness.hodoo.hodooharness.activity.chart;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.View;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 import com.animal.harness.hodoo.hodooharness.HodooApplication;
 import com.animal.harness.hodoo.hodooharness.R;
@@ -32,10 +32,14 @@ public class ChartActivity extends BaseActivity<ChartActivity> {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chart);
         binding.setActivity(this);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setTitleBar("통계 관리");
+        setSupportActionBar(toolbar);
+
         int maxNum = 0;
 
         List<ChartData> datas = new ArrayList<>();
-        datas.add(ChartData.builder().x(100).y(600).build());
+        datas.add(ChartData.builder().x(0).y(200).build());
         datas.add(ChartData.builder().x(200).y(500).build());
         datas.add(ChartData.builder().x(300).y(300).build());
         datas.add(ChartData.builder().x(400).y(400).build());
@@ -48,12 +52,12 @@ public class ChartActivity extends BaseActivity<ChartActivity> {
 //                maxNum = (int) path[i].y;
 //            }
 //        }
-        binding.graphView.setWidth(deviceWidth);
-        binding.graphView.setPoint(datas);
-        binding.graphView.setmActivity(this);
-        binding.graphView.start();
+//        binding.graphView.setWidth(deviceWidth);
+//        binding.graphView.setPoint(datas);
+//        binding.graphView.setmActivity(this);
+//        binding.graphView.start();
 
-        binding.dayView.setAdapter(new DaysAdapter(getSupportFragmentManager(), new Date().getTime()));
+//        binding.dayView.setAdapter(new DaysAdapter(getSupportFragmentManager(), new Date().getTime()));
 
 
     }
@@ -63,4 +67,8 @@ public class ChartActivity extends BaseActivity<ChartActivity> {
         return this;
     }
 
+    @Override
+    public void setTitleBar(String titleStr) {
+        super.setTitleBar(titleStr);
+    }
 }

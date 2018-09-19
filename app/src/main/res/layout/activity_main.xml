@@ -1,33 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <include
+        layout="@layout/title_bar"/>
+    <android.support.design.widget.TabLayout
+        android:layout_below="@+id/toolbar"
+        android:background="#19455b63"
+        android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical|center_horizontal"
-        android:orientation="vertical"
-        android:background="@color/hodoo_background_color">
-
-        <ImageView
-            android:layout_width="150dp"
-            android:layout_height="130dp"
-            android:src="@drawable/main_logo"/>
-
-        <ProgressBar
-            android:layout_marginTop="10dp"
-            android:id="@+id/progress_loader"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="visible" />
-
-    </LinearLayout>
-
-
+        android:layout_height="wrap_content"
+        app:tabIndicatorHeight="0dp"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tab_layout"/>
 
 </RelativeLayout>

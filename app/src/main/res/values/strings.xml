@@ -7,4 +7,9 @@
     <string name="confirm">확인</string>
     <string name="cancle">취소</string>
     <string name="title_activity_gps">GPSActivity</string>
+
+    <string-array name="chart_inner_tab">
+        <item>활동량</item>
+        <item>활동패턴</item>
+    </string-array>
 </resources>

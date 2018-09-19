@@ -17,4 +17,7 @@
     <color name="hodoo_text_light_gray">#c3c3c3</color>
     <color name="hodoo_gray">#e5e5e5</color>
 
+    <color name="hodoo_menu_default">#aaaaaa</color>
+    <color name="hodoo_menu_active">#ee6156</color>
+
 </resources>

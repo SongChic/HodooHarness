@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--<com.animal.harness.hodoo.hodooharness.view.PieView-->
+        <!--android:id="@+id/pieView"-->
+        <!--android:layout_width="600dp"-->
+        <!--android:layout_height="wrap_content" />-->
+
+    <im.dacer.androidcharts.PieView
+        android:id="@+id/pie_view"
+        android:layout_marginTop="50dp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        />
+
+    <LinearLayout
+        android:layout_marginTop="50dp"
+        android:layout_below="@+id/pie_view"
+        android:id="@+id/pie_info_wrap"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <View
+                android:layout_marginRight="5dp"
+                android:background="#ee6156"
+                android:layout_width="10dp"
+                android:layout_height="10dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="16h 휴식"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <View
+                android:layout_marginRight="5dp"
+                android:background="#f99088"
+                android:layout_width="10dp"
+                android:layout_height="10dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4h 실외활동"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <View
+                android:layout_marginRight="5dp"
+                android:background="#fbd9d7"
+                android:layout_width="10dp"
+                android:layout_height="10dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4h 실내활동"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

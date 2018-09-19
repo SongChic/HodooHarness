@@ -19,14 +19,15 @@ public class DaysAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public Fragment getItem(int i) {
-        switch (i) {
+    public Fragment getItem(int position) {
+        switch (position) {
             case 0:
             case 1:
             case 2:
                 DaysFragment fragment = new DaysFragment();
                 Bundle bundle = new Bundle();
-                bundle.putLong("now", mNow);
+                bundle.putLong("now", mNow );
+                bundle.putInt("position", position );
                 fragment.setArguments(bundle);
                 return fragment;
         }

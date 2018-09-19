@@ -1,12 +1,23 @@
 package com.animal.harness.hodoo.hodooharness.base;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 
 import com.animal.harness.hodoo.hodooharness.R;
 
@@ -34,5 +45,39 @@ public abstract class BaseActivity<D extends Activity> extends AppCompatActivity
                     .setMessage(content);
         }
         return builder;
+    }
+    public void setTitleBar( String titleStr ) {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG, "back btn touch");
+            }
+        });
+        TextView title = findViewById(R.id.title_str);
+        title.setText(titleStr);
+        setSupportActionBar(toolbar);
+    }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        for ( int i = 0; i < menu.size(); i++ ) {
+            Drawable d = menu.getItem(i).getIcon();
+            if ( d != null ) {
+                d.mutate();
+                if ( i == 0 & checkGPS() ) {
+                    d.setColorFilter(getResources().getColor(R.color.hodoo_menu_active), PorterDuff.Mode.SRC_ATOP);
+                } else {
+                    d.setColorFilter(getResources().getColor(R.color.hodoo_menu_default), PorterDuff.Mode.SRC_ATOP);
+                }
+
+            }
+        }
+        return true;
+    }
+    public boolean checkGPS() {
+       return (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
     }
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transition  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/hodoo_menu_active"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <stroke android:color="#aaaaaa"
+                android:width="2dp"/>
+            <solid android:color="@color/white"/>
+        </shape>
+    </item>
+</transition>
