@@ -22,7 +22,8 @@
             android:layout_width="100dp"
             android:layout_height="32dp"
             android:text="초기화"
-            android:background="#aaaaaa"/>
+            android:background="#aaaaaa"
+            android:visibility="gone"/>
         <Button
             android:layout_centerHorizontal="true"
             android:id="@+id/stop_watch_start"
@@ -30,7 +31,8 @@
             android:layout_height="32dp"
             android:text="시작"
             android:background="@drawable/stop_watch_btn"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            />
 
     </RelativeLayout>
 

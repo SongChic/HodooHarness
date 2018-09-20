@@ -15,4 +15,8 @@ public class HodooUtil {
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
     }
+    public static DisplayMetrics getDisplayMetrics ( Context context ) {
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        return dm;
+    }
 }

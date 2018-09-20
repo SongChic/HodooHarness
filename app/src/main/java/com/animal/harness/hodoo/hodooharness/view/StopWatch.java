@@ -141,6 +141,7 @@ public class StopWatch extends BaseView<StopWatch> implements Runnable {
 //        Log.e(TAG, String.format("width : %d", HodooUtil.dpToPx(getContext(), 200)));
     }
     public void start() {
+        Log.e(TAG, "start");
         if ( animation == null ) animation = new Thread(this);
         animation.start();
         startState = true;
@@ -157,7 +158,7 @@ public class StopWatch extends BaseView<StopWatch> implements Runnable {
 
     @Override
     public void run() {
-        while( true ) {
+        while( startState ) {
             if ( angle == 360 ) break;
             postInvalidate();
             angle += 0.1;

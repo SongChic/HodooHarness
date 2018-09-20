@@ -39,6 +39,7 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"/>
             <ImageView
+                android:layout_alignLeft="@+id/day_view"
                 android:layout_marginTop="10dp"
                 android:id="@+id/left_btn"
                 android:src="@drawable/arrow_left"

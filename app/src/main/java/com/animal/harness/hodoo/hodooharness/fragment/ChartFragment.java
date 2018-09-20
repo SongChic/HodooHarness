@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,14 +86,15 @@ public class ChartFragment extends BaseFragment implements View.OnClickListener 
         });
 
         binding.dayView.setDate( new Date().getTime() );
-        binding.dayView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                Log.e(TAG, String.format("scroll : %d", binding.dayView.getScrollX()));
-            }
-        });
+//        binding.dayView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+//            @Override
+//            public void onScrollChanged() {
+//                Log.e(TAG, String.format("scroll : %d", binding.dayView.getScrollX()));
+//            }
+//        });
         binding.leftBtn.setOnClickListener(this);
         binding.rightBtn.setOnClickListener(this);
+//        binding.dayView..setOrientation(LinearLayoutManager.HORIZONTAL);
 //        binding.dayView.setAdapter(new DaysAdapter(getActivity().getSupportFragmentManager(), new Date().getTime()));
         ArrayList<PieHelper> pieHelperArrayList = new ArrayList<PieHelper>();
         pieHelperArrayList.add(new PieHelper(25f));
@@ -120,10 +122,10 @@ public class ChartFragment extends BaseFragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.left_btn :
-                binding.dayView.move(false);
+//                binding.dayView.move(false);
                 break;
             case R.id.right_btn :
-                binding.dayView.move(true);
+//                binding.dayView.move(true);
                 break;
         }
     }
