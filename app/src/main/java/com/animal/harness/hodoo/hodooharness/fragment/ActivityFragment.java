@@ -4,18 +4,26 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
+import android.text.style.LeadingMarginSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +37,18 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     private StopWatch stopWatch;
     private Button stopWatchStart;
     private Button stopWatchReset;
+    private TextView tipsIcon;
+    private TextView tipsContent;
+    private int count = 0;
+    private boolean threadState = true;
+    private Thread anim;
+
+    private String[] tipsStr = {
+            "산책용 목줄을 매면 주저앉는 경우에는 강제로 데려가지 마시고 실내에서 익숙하게 한 후에 서서히 외부로 나오게 하는 것이 좋습니다.",
+            "강아지가 흥분하여 제어가 안될 경우에는 목줄을 당기며 \"안돼\"를 강하게 말해 주세요.",
+            "일반적으로 분리불안증을 가지고 있는 반려견의 경우에 가장 좋은 처방약은 바로 산책입니다.",
+    };
+
     public ActivityFragment(){}
 
     @Nullable
@@ -37,6 +57,32 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         //stop_watch
         RelativeLayout wrap = (RelativeLayout) inflater.inflate(R.layout.fragment_stopwatch, container, false);
         RelativeLayout btnWrap = wrap.findViewById(R.id.stop_watch_btn);
+        tipsIcon = wrap.findViewById(R.id.tips);
+        tipsContent = wrap.findViewById(R.id.tips_content);
+
+        tipsIcon.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onGlobalLayout() {
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tipsContent.getLayoutParams();
+                params.setMargins(0, tipsIcon.getHeight() / 2, 0, 0);
+                tipsContent.setLayoutParams(params);
+
+                SpannableString ss = new SpannableString(tipsStr[count]);
+                ss.setSpan(new Margin(1, tipsIcon.getWidth() + 20), 0, ss.length(), 0);
+                tipsContent.setText(ss);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setTipText();
+                        count++;
+                    }
+                }, 1000 * 30);
+                tipsIcon.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
         stopWatchStart = wrap.findViewById(R.id.stop_watch_start);
         stopWatchReset = wrap.findViewById(R.id.stop_watch_reset);
         stopWatchStart.setOnClickListener(this);
@@ -44,6 +90,26 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         stopWatch = wrap.findViewById(R.id.stop_watch);
 
         return wrap;
+    }
+    private void setTipText() {
+        tipsContent.animate().alpha(0).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                if ( count >= tipsStr.length ) count = 0;
+                SpannableString ss = new SpannableString(tipsStr[count]);
+                ss.setSpan(new Margin(1, tipsIcon.getWidth() + 20), 0, ss.length(), 0);
+                tipsContent.setText(ss);
+                tipsContent.animate().alpha(1).setDuration(1000);
+                count++;
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setTipText();
+                    }
+                }, 1000 * 30);
+            }
+        }).setDuration(1000);
     }
 
     @Override
@@ -97,5 +163,56 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                 Log.e(TAG, "stopWatchReset");
                 break;
         }
+    }
+
+    class Margin implements LeadingMarginSpan.LeadingMarginSpan2
+    {
+        private int margin;
+        private int lines;
+
+        Margin(int lines, int margin)
+        {
+            this.margin = margin;
+            this.lines = lines;
+        }
+
+        @Override
+        public void drawLeadingMargin(Canvas arg0, Paint arg1, int arg2,
+                                      int arg3, int arg4, int arg5, int arg6, CharSequence arg7,
+                                      int arg8, int arg9, boolean arg10, Layout arg11)
+        {
+// TODO Auto-generated method stub
+        }
+
+        @Override
+        public int getLeadingMargin(boolean arg0)
+        {
+// TODO Auto-generated method stub
+            if (arg0) {
+                /*
+                 * This indentation is applied to the number of rows returned
+                 * getLeadingMarginLineCount ()
+                 */
+                return margin;
+            }
+            else
+            {
+// Offset for all other Layout layout ) { }
+                /*
+                 * Returns * the number of rows which should be applied * indent
+                 * returned by getLeadingMargin (true) Note:* Indent only
+                 * applies to N lines of the first paragraph.
+                 */
+                return 0;
+            }
+        }
+
+        @Override
+        public int getLeadingMarginLineCount()
+        {
+            // TODO Auto-generated method stub
+            return lines;
+        }
+
     }
 }
