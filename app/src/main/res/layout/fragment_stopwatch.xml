@@ -2,6 +2,35 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        android:paddingTop="22dp"
+        android:paddingBottom="22dp"
+        android:paddingLeft="33dp"
+        android:paddingRight="33dp"
+        android:elevation="2dp">
+        <TextView
+            android:id="@+id/tips"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:background="@drawable/tip_back"
+            android:textColor="#fff"
+            android:text="Tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:lineSpacingExtra="5dp"
+            android:id="@+id/tips_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout >
+
     <com.animal.harness.hodoo.hodooharness.view.StopWatch
         android:id="@+id/stop_watch"
         android:layout_centerInParent="true"

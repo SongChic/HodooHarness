@@ -58,7 +58,7 @@ public class StopWatch extends BaseView<StopWatch> implements Runnable {
     private void init() {
         DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
         mDeviceWidth = dm.widthPixels;
-        mDeviceHeight = dm.heightPixels;
+        mDeviceHeight = dm.heightPixels + 400;
         width = height = HodooUtil.dpToPx(getContext(), 200);
 
         startX = (mDeviceWidth / 2) - (width / 2);
