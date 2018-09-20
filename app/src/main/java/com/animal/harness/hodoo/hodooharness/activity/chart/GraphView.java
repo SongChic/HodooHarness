@@ -32,6 +32,8 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
     private int viewHeight = 0;
     private int maxY = 0;
 
+    public static final int LINE_TYPE_NORMAL = 0;
+
     /* data */
     List<ChartData> mDatas = new ArrayList<>();
     List<ChartData> mBaseDatas = new ArrayList<>();
