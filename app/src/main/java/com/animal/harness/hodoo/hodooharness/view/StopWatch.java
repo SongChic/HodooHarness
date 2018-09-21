@@ -171,9 +171,9 @@ public class StopWatch extends BaseView<StopWatch> implements Runnable {
                 while( angle > 0 ) {
                     postInvalidate();
                     angle -= 0.1;
-                    time -= 0.01;
+                    time -= 0.001;
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(1);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

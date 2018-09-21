@@ -30,8 +30,11 @@ import android.widget.TextView;
 
 import com.animal.harness.hodoo.hodooharness.R;
 import com.animal.harness.hodoo.hodooharness.base.BaseFragment;
+import com.animal.harness.hodoo.hodooharness.util.DBHelper;
 import com.animal.harness.hodoo.hodooharness.util.HodooUtil;
 import com.animal.harness.hodoo.hodooharness.view.StopWatch;
+
+import static com.animal.harness.hodoo.hodooharness.constant.HodooConstant.LOCATION_DB_NAME;
 
 public class ActivityFragment extends BaseFragment implements View.OnClickListener {
     private StopWatch stopWatch;
@@ -41,6 +44,7 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     private TextView tipsContent;
     private int count = 0;
     private boolean restartState = false;
+    private DBHelper helper;
 
     @SuppressLint("ObjectAnimatorBinding") ObjectAnimator backgroundColorAnimator;
 
@@ -98,6 +102,13 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                 Color.WHITE,
                 Color.BLACK);
         backgroundColorAnimator.setDuration(1000);
+        helper = new DBHelper(
+                getContext(),
+                LOCATION_DB_NAME,
+                null,
+                1
+        );
+//        helper.resetDB();
 
         return wrap;
     }

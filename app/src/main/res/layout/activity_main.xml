@@ -15,6 +15,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabIndicatorHeight="0dp"/>
+    <LinearLayout
+        android:id="@+id/fragment_wrap"
+        android:layout_below="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+        <fragment
+            android:name="com.animal.harness.hodoo.hodooharness.fragment.MainFragment"
+            android:id="@+id/setting_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            />
+    </LinearLayout>
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
