@@ -74,6 +74,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
     public void resetDB() {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("delete from " + mName);
+        db.execSQL("drop table  " + mName);
     }
 }

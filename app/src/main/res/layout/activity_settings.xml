@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_marginTop="47dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <TextView
+            android:textAlignment="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="블루투스를 찾을 수 없습니다.\n다시 연결해 주세요."/>
+        <LinearLayout
+            android:layout_marginTop="34dp"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+            <ImageView
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bluetooth_alert"
+                android:layout_gravity="center_vertical"/>
+            <com.github.ybq.android.spinkit.SpinKitView
+                android:id="@+id/spin_kit"
+                style="@style/SpinKitView.ThreeBounce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:SpinKit_Color="#aaaaaa" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_marginTop="17dp"
+            android:src="@drawable/harness"
+            android:layout_width="126dp"
+            android:layout_height="43dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

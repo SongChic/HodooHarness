@@ -12,8 +12,8 @@
         android:title="블루투스"
         app:showAsAction="always"/>
     <item
-        android:icon="@drawable/menu_alert"
-        android:id="@+id/alert_icon"
+        android:icon="@drawable/menu_settings"
+        android:id="@+id/menu_settings"
         android:title="알림"
         app:showAsAction="always"/>
 </menu>

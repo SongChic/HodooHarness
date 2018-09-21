@@ -6,14 +6,13 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
+        android:name=".HodooApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name=".HodooApplication"
-        >
+        android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +24,8 @@
             android:name=".activity.gps.GPSActivity"
             android:label="@string/title_activity_gps"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activity.chart.ChartActivity"></activity>
+        <activity android:name=".activity.chart.ChartActivity" />
+        <activity android:name=".activity.settings.SettingsActivity"></activity>
     </application>
 
 </manifest>

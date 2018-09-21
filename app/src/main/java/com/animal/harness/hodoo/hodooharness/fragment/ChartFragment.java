@@ -85,7 +85,7 @@ public class ChartFragment extends BaseFragment implements View.OnClickListener 
             }
         });
 
-        binding.dayView.setDate( new Date().getTime() );
+//        binding.dayView.setDate( new Date().getTime() );
 //        binding.dayView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
 //            @Override
 //            public void onScrollChanged() {
