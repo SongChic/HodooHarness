@@ -40,8 +40,9 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     private TextView tipsIcon;
     private TextView tipsContent;
     private int count = 0;
-    private boolean threadState = true;
-    private Thread anim;
+    private boolean restartState = false;
+
+    @SuppressLint("ObjectAnimatorBinding") ObjectAnimator backgroundColorAnimator;
 
     private String[] tipsStr = {
             "산책용 목줄을 매면 주저앉는 경우에는 강제로 데려가지 마시고 실내에서 익숙하게 한 후에 서서히 외부로 나오게 하는 것이 좋습니다.",
@@ -71,6 +72,9 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                 SpannableString ss = new SpannableString(tipsStr[count]);
                 ss.setSpan(new Margin(1, tipsIcon.getWidth() + 20), 0, ss.length(), 0);
                 tipsContent.setText(ss);
+//                params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, tipsContent.getMeasuredHeight());
+//                ((RelativeLayout) tipsContent.getParent()).setLayoutParams(params);
+                Log.e(TAG, String.format("tipsContent height : %d", tipsContent.getHeight()));
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -88,6 +92,12 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         stopWatchStart.setOnClickListener(this);
         stopWatchReset.setOnClickListener(this);
         stopWatch = wrap.findViewById(R.id.stop_watch);
+        backgroundColorAnimator = ObjectAnimator.ofObject(stopWatchStart,
+                "textColor",
+                new ArgbEvaluator(),
+                Color.WHITE,
+                Color.BLACK);
+        backgroundColorAnimator.setDuration(1000);
 
         return wrap;
     }
@@ -124,42 +134,63 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
+        final TransitionDrawable background = (TransitionDrawable) stopWatchStart.getBackground();
         switch (v.getId()) {
             case R.id.stop_watch_start :
-                @SuppressLint("ObjectAnimatorBinding") final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(v,
-                        "textColor",
-                        new ArgbEvaluator(),
-                        Color.WHITE,
-                        Color.BLACK);
-                backgroundColorAnimator.setDuration(1000);
-                final TransitionDrawable background = (TransitionDrawable) v.getBackground();
-                if ( stopWatch.isStart() ) {
-
-                    stopWatchReset.animate().alpha(0).setDuration(500).withLayer().withEndAction(new Runnable() {
-                        @Override
-                        public void run() {
-                            stopWatchReset.setVisibility(View.GONE);
-                        }
-                    });
-                    v.animate().translationX( 0 ).setDuration(500).withLayer();
-                    stopWatch.stop();
-                    background.reverseTransition(1000);
-                    backgroundColorAnimator.reverse();
-                    ((TextView) v).setText("시작");
-                } else {
+                /* start */
+                if ( !stopWatch.isStart() ) {
                     stopWatchReset.setVisibility(View.VISIBLE);
                     stopWatchReset.animate().alpha(1).setDuration(1000).withLayer();
-                    v.animate().translationX( -(v.getWidth() / 2 + 50) ).setDuration(500).withLayer();
+                    if ( !restartState ) {
+                        v.animate().translationX( -(v.getWidth() / 2 + 50) ).setDuration(500).withLayer();
+                    }
+
                     backgroundColorAnimator.start();
                     background.startTransition(1000);
 
                     ((TextView) v).setText("중지");
                     if ( stopWatch != null )
                         stopWatch.start();
+                    restartState = true;
                 }
+                /* stop */
+                else {
+                    if ( !restartState ) {
+                        stopWatchReset.animate().alpha(0).setDuration(500).withLayer().withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                stopWatchReset.setVisibility(View.GONE);
+                            }
+                        });
+                        v.animate().translationX( 0 ).setDuration(500).withLayer();
+                    }
+                    stopWatch.stop();
+                    background.reverseTransition(1000);
+                    backgroundColorAnimator.reverse();
+                    ((TextView) v).setText("시작");
+
+                }
+
                 break;
             case R.id.stop_watch_reset :
+                /* restart */
+                if ( stopWatch.isStart() ) {
+                    stopWatch.stop();
+                    stopWatch.reset();
+                    background.reverseTransition(1000);
+                    backgroundColorAnimator.reverse();
+                    stopWatchStart.setText("시작");
+                }
+
+                stopWatchStart.animate().translationX( 0 ).setDuration(500).withLayer();
+                v.animate().alpha(0).setDuration(500).withLayer().withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        v.setVisibility(View.GONE);
+                    }
+                });
+                restartState = false;
                 Log.e(TAG, "stopWatchReset");
                 break;
         }
