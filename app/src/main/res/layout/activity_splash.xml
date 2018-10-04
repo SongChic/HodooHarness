@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.ssomai.android.scalablelayout.ScalableLayout
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:scale_base_width="360"
+        app:scale_base_height="640"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:scale_width="108"
+            app:scale_height="131"
+            app:scale_left="126"
+            app:scale_top="182"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/logo"
+            />
+        <ProgressBar
+            style="@style/SpinKitView.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            app:scale_width="50"
+            app:scale_height="50"
+            app:scale_top="330"/>
+
+        <TextView
+            app:scale_top="544"
+            app:scale_width="360"
+            app:scale_height="20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/main_text"
+            app:scale_textsize="14"
+            android:gravity="center"
+            />
+
+    </com.ssomai.android.scalablelayout.ScalableLayout>
+
+</RelativeLayout>

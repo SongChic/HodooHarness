@@ -1,6 +1,5 @@
 package com.animal.harness.hodoo.hodooharness.adapter;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
@@ -8,7 +7,7 @@ import android.util.Log;
 import com.animal.harness.hodoo.hodooharness.base.BaseFragment;
 import com.animal.harness.hodoo.hodooharness.fragment.ActivityFragment;
 import com.animal.harness.hodoo.hodooharness.fragment.ChartFragment;
-import com.animal.harness.hodoo.hodooharness.fragment.SettingFragment;
+import com.animal.harness.hodoo.hodooharness.fragment.PatternFragment;
 
 public class TabsPagerAdapter extends FragmentStatePagerAdapter {
     String[] mTitle;
@@ -32,7 +31,7 @@ public class TabsPagerAdapter extends FragmentStatePagerAdapter {
                 if ( fragments[1] == null ) fragments[1] = ChartFragment.newInstance();
                 return fragments[1];
             case 2 :
-                if ( fragments[2] == null ) fragments[2] = SettingFragment.newInstance();
+                if ( fragments[2] == null ) fragments[2] = PatternFragment.newInstance();
                 return fragments[2];
         }
         return null;

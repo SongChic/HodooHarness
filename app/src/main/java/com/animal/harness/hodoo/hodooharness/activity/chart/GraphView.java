@@ -8,21 +8,23 @@ import android.graphics.CornerPathEffect;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.graphics.Shader;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.ViewTreeObserver;
+import android.view.MotionEvent;
 
+import com.animal.harness.hodoo.hodooharness.R;
 import com.animal.harness.hodoo.hodooharness.base.BaseView;
 import com.animal.harness.hodoo.hodooharness.domain.ChartData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GraphView extends BaseView<GraphView> implements Runnable{
+public class GraphView extends BaseView<GraphView> implements Runnable {
     /* variable */
     private Context mContext;
     private int mDeviceWidth = 0;
@@ -30,11 +32,16 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
     private Activity mActivity;
 
     private int viewHeight = 0;
+    private int minY = 0;
     private int maxY = 0;
 
+    private boolean animState = false;
+
     public static final int LINE_TYPE_NORMAL = 0;
+    public static final int MAX_Y = 600;
 
     /* data */
+    private boolean mDataCheckState = false;
     List<ChartData> mDatas = new ArrayList<>();
     List<ChartData> mBaseDatas = new ArrayList<>();
 
@@ -44,6 +51,11 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
     int xWidth = 0;
     int count = 600;
     private Thread animator = null;
+
+    /* tooltip */
+    private int tooltipPos = -1;
+    private boolean tooltipState = false;
+    private float tx = 0, ty = 0;
 
     public GraphView(Context context) {
         super(context);
@@ -67,6 +79,15 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
 
     private void init() {
         viewHeight = getHeight();
+    }
+    public void initData() {
+        mBaseDatas = new ArrayList<>();
+        if ( animator != null ) {
+            animator.interrupt();
+            animator = null;
+            count = 600;
+        }
+
 
     }
     public void setmActivity( Activity activity ) {
@@ -94,18 +115,18 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
         Path path = new Path();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.parseColor("#ee6156"));
-        paint.setShader(new LinearGradient(0,0,0,maxY + 500, Color.parseColor("#ee6156"),0xffffffff, Shader.TileMode.CLAMP));
+        paint.setShader(new LinearGradient(0,0,0, minY + 500, Color.parseColor("#ee6156"),0xffffffff, Shader.TileMode.CLAMP));
         paint.setDither(true);                    // set the dither to true
         paint.setStyle(Paint.Style.FILL);       // set to STOKE
         paint.setStrokeJoin(Paint.Join.ROUND);    // set the join to round you want
         paint.setStrokeCap(Paint.Cap.ROUND);      // set the paint cap to round too
         paint.setPathEffect(new CornerPathEffect(200) );   // set the path effect when they join.
         paint.setAntiAlias(true);
-        path.moveTo(mPadding, maxY);
+        path.moveTo(mPadding, minY);
         for (int i = 0; i < mBaseDatas.size(); i++){
             path.lineTo(mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY());
         }
-        path.lineTo(mBaseDatas.size() * x, maxY);
+        path.lineTo(mBaseDatas.size() * x, minY);
 
         canvas.drawPath(path, paint);
 
@@ -118,6 +139,7 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
         pointPaint.setStrokeCap(Paint.Cap.ROUND);
         pointPaint.setStrokeWidth(30);
 
+
         Paint pointStrokePaint = new Paint();
         pointStrokePaint.setColor(Color.WHITE);
         pointStrokePaint.setAntiAlias(true);
@@ -128,28 +150,60 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
         pointStrokePaint.setStrokeWidth(40);
 
         for (int i = 0; i < mBaseDatas.size(); i++){
+//            float y = mBaseDatas.get(i).getY() != maxY / 100 * 100  ? mBaseDatas.get(i).getY() + 100 : mBaseDatas.get(i).getY();
             canvas.drawPoint( mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY(), pointStrokePaint );
             canvas.drawPoint( mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY(), pointPaint );
         }
+        if ( tooltipState ) {
+            /* 안쪽면 */
+            Paint tPaint = new Paint();
+            tPaint.setAntiAlias(true);
+            tPaint.setColor(Color.WHITE);
+            tPaint.setStrokeWidth(2);
+            RectF rectF = new RectF(tx - 100, ty - 100, tx + 100, ty);
+            canvas.drawRoundRect(rectF, 10, 10, tPaint);
+
+            /* 바깥쪽 선 */
+            tPaint = new Paint();
+            tPaint.setAntiAlias(true);
+            tPaint.setStyle(Paint.Style.STROKE);
+            tPaint.setStrokeWidth(2);
+            tPaint.setColor(mContext.getResources().getColor(R.color.hodoo_menu_active));
+            canvas.drawRoundRect(rectF, 10, 10, tPaint);
+
+            /* 삼각형 */
+            tPaint = new Paint();
+            tPaint.setStyle(Paint.Style.FILL);
+            tPaint.setColor(mContext.getResources().getColor(R.color.hodoo_menu_active));
+            path = new Path();
+            path.moveTo(tx - 20, ty);
+            path.lineTo((tx - 20) + 20, ty + 20);
+            path.lineTo((tx - 20) + 40, ty);
+            path.close();
+//            path.lineTo(tx + 50, ty + 50);
+            path.close();
+            canvas.drawPath(path, tPaint);
+        }
+
+        /* 데이터가 없을 시 */
+        if ( mDataCheckState ) {
+            canvas.drawText("데이터가 없습니다.", 300, 300, new Paint());
+        }
+
     }
-    public void setWidth( int width ) {
+    public void setWidth( int width, int bottomPadding ) {
         mDeviceWidth = width;
-        maxY = getMeasuredHeight() - 200;
+        minY = getMeasuredHeight() - bottomPadding;
     }
 
     public void setX(final List<ChartData> datas) {
-        viewHeight = getHeight();
         Log.e(TAG, String.format("viewHeight : %d", viewHeight));
 
-        x = xWidth = (mDeviceWidth - mPadding) / datas.size();
+        x = xWidth = (mDeviceWidth - mPadding) / 8;
         if ( mBaseDatas.size() == 0 ) {
             for ( int i = 0; i < mDatas.size(); i++ ) {
-                if ( i == 0 ) {
-                    mBaseDatas.add(ChartData.builder().x(mPadding).y(maxY).build());
-                } else {
-                    mBaseDatas.add(ChartData.builder().x(x).y(maxY).build());
-                }
-                mDatas.get(i).setY( maxY - ( maxY * (mDatas.get(i).getY() / maxY * 100) / 100 ) );
+                mBaseDatas.add(ChartData.builder().x(x).y(minY).build());
+                mDatas.get(i).setY( minY - ( minY * (mDatas.get(i).getY() / minY * 100) / 100 ) );
                 x += xWidth;
             }
         }
@@ -168,6 +222,21 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
         setX(mDatas);
     }
     public void setPoint ( List<ChartData> data ) {
+        viewHeight = getHeight();
+        count = maxY = viewHeight / 2;
+
+        /* 데이터 가공 */
+        float max = 0;
+
+        for ( int i = 0; i < data.size(); i++ )
+            if ( max < data.get(i).getY() )
+                max = data.get(i).getY();
+
+        //MAX_Y
+        for ( int i = 0; i < data.size(); i++ )
+            data.get(i).setY( maxY * ((data.get(i).getY()) / max * 100) / 100 );
+
+        Log.e(TAG, String.format("max : %f", max));
         mDatas = data;
         setX(mDatas);
     }
@@ -188,10 +257,41 @@ public class GraphView extends BaseView<GraphView> implements Runnable{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             count--;
         }
         animator.interrupt();
 
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        float touchX = event.getX(), touchY = event.getY();
+
+        for ( int i = 0; i < mBaseDatas.size(); i++ ) {
+            if ( (mBaseDatas.get(i).getX() - 5 <= touchX  && mBaseDatas.get(i).getX() + 5 >= touchX) &&
+                    mBaseDatas.get(i).getY() - 5 <= touchY  && mBaseDatas.get(i).getY() + 5 >= touchY) {
+
+                if ( tooltipPos == i || tooltipPos < 0 || !tooltipState )
+                    tooltipState = tooltipState ? false : true;
+                tooltipPos = i;
+                tx = mBaseDatas.get(i).getX();
+                ty = mBaseDatas.get(i).getY() - 50;
+                postInvalidate();
+                break;
+            }
+        }
+        Log.e(TAG, String.format("tooltipPos : %d", tooltipPos));
+
+        Log.e(TAG, "touch");
+        return super.onTouchEvent(event);
+    }
+    public void setTooltipPos( int position ) {
+        tx = mBaseDatas.get(position).getX();
+        ty = mBaseDatas.get(position).getY();
+        postInvalidate();
+    }
+    public void setDataCheck( boolean checkState ) {
+        mDataCheckState = checkState;
+    }
+
 }

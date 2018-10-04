@@ -35,31 +35,6 @@ public class ChartActivity extends BaseActivity<ChartActivity> {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setTitleBar("통계 관리");
         setSupportActionBar(toolbar);
-
-        int maxNum = 0;
-
-        List<ChartData> datas = new ArrayList<>();
-        datas.add(ChartData.builder().x(0).y(200).build());
-        datas.add(ChartData.builder().x(200).y(500).build());
-        datas.add(ChartData.builder().x(300).y(300).build());
-        datas.add(ChartData.builder().x(400).y(400).build());
-        datas.add(ChartData.builder().x(500).y(100).build());
-        datas.add(ChartData.builder().x(600).y(300).build());
-        datas.add(ChartData.builder().x(700).y(200).build());
-        datas.add(ChartData.builder().x(800).y(600).build());
-//        for ( int i = 0; i < path.length; i++ ) {
-//            if ( maxNum > path[i].y ) {
-//                maxNum = (int) path[i].y;
-//            }
-//        }
-//        binding.graphView.setWidth(deviceWidth);
-//        binding.graphView.setPoint(datas);
-//        binding.graphView.setmActivity(this);
-//        binding.graphView.start();
-
-//        binding.dayView.setAdapter(new DaysAdapter(getSupportFragmentManager(), new Date().getTime()));
-
-
     }
 
     @Override

@@ -23,39 +23,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-
-        <RelativeLayout
+        <com.animal.harness.hodoo.hodooharness.view.DaysHorizontalView
             android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:id="@+id/day_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.animal.harness.hodoo.hodooharness.view.DaysHorizontalView
-                android:background="@color/white"
-                android:id="@+id/day_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"/>
-            <ImageView
-                android:layout_alignLeft="@+id/day_view"
-                android:layout_marginTop="10dp"
-                android:id="@+id/left_btn"
-                android:src="@drawable/arrow_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="VectorDrawableCompat" />
-            <ImageView
-                android:layout_marginTop="10dp"
-                android:layout_alignParentRight="true"
-                android:id="@+id/right_btn"
-                android:src="@drawable/arrow_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="VectorDrawableCompat" />
-
-        </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            />
 
     </RelativeLayout>
 </layout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     package="com.animal.harness.hodoo.hodooharness">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -12,8 +13,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme"
+        app:popupTheme="@style/AppTheme">
+        <activity android:name=".Splash"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,8 +27,12 @@
             android:name=".activity.gps.GPSActivity"
             android:label="@string/title_activity_gps"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activity.chart.ChartActivity" />
-        <activity android:name=".activity.settings.SettingsActivity"></activity>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.chart.ChartActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.settings.SettingsActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

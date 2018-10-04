@@ -10,8 +10,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class GPSData {
     private int id;
-    private double lat;
-    private double lon;
+    private long total_time;
     private double sum;
     private long created;
     public GPSData () {

@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -14,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -57,6 +60,7 @@ public abstract class BaseActivity<D extends Activity> extends AppCompatActivity
         });
         TextView title = findViewById(R.id.title_str);
         title.setText(titleStr);
+        title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         setSupportActionBar(toolbar);
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -66,6 +70,9 @@ public abstract class BaseActivity<D extends Activity> extends AppCompatActivity
         menuInflater.inflate(R.menu.menu, menu);
         for ( int i = 0; i < menu.size(); i++ ) {
             Drawable d = menu.getItem(i).getIcon();
+//            Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+//            Drawable dr = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 50, 57, true));
+//            menu.getItem(i).setIcon(dr);
             if ( d != null ) {
                 d.mutate();
                 if ( i == 0 & checkGPS() ) {

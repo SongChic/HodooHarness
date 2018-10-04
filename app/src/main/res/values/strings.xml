@@ -12,4 +12,12 @@
         <item>활동량</item>
         <item>활동패턴</item>
     </string-array>
+    <string-array name="chart_text">
+        <item>MINUTES</item>
+        <item>METER</item>
+        <item>km/h</item>
+    </string-array>
+
+    <string name="main_text">고마워, 거기에 있어줘서.</string>
+
 </resources>

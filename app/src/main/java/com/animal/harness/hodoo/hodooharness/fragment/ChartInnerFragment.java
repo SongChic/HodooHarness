@@ -18,28 +18,42 @@ import com.animal.harness.hodoo.hodooharness.R;
 import com.animal.harness.hodoo.hodooharness.activity.chart.GraphView;
 import com.animal.harness.hodoo.hodooharness.base.BaseFragment;
 import com.animal.harness.hodoo.hodooharness.domain.ChartData;
+import com.animal.harness.hodoo.hodooharness.domain.GPSData;
+import com.animal.harness.hodoo.hodooharness.util.DBHelper;
 import com.animal.harness.hodoo.hodooharness.util.HodooUtil;
 
-import org.w3c.dom.Text;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ChartInnerFragment extends BaseFragment {
     private GraphView mGraphView;
     private LinearLayout infoWrap;
+    private DBHelper helper;
+    private String[] cahrtTexts;
+    private SimpleDateFormat sdf = new SimpleDateFormat("m");
+    private TextView minView, meterView, kmhView;
+    private long mStartDate;
+    private int mBottomPadding = 0;
+
+    SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy.MM.dd");
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RelativeLayout wrap = (RelativeLayout) inflater.inflate(R.layout.fragment_chart, container, false);
         mGraphView = wrap.findViewById(R.id.graph_view);
         infoWrap = wrap.findViewById(R.id.info_wrap);
-//        infoWrap.setBackgroundResource(R.drawable.info_round);
         init();
         return wrap;
     }
     private void init() {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(HodooUtil.dpToPx(getContext(), 70), HodooUtil.dpToPx(getContext(), 70));
+
+        cahrtTexts = getResources().getStringArray(R.array.chart_text);
         for ( int i = 0; i < 3; i++ ) {
             RelativeLayout info = new RelativeLayout(getContext());
             LinearLayout min = new LinearLayout(getContext());
@@ -56,11 +70,21 @@ public class ChartInnerFragment extends BaseFragment {
             num.setGravity(Gravity.CENTER);
             text.setGravity(Gravity.CENTER);
 
-            num.setText("22");
+            switch (i) {
+                case 0:
+                    minView = num;
+                    break;
+                case 1:
+                    meterView = num;
+                    break;
+                case 2:
+                    kmhView = num;
+                    break;
+            }
             num.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
             num.setTextColor(Color.parseColor("#666666"));
 
-            text.setText("MINUTES");
+            text.setText(cahrtTexts[i]);
             text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11 );
             text.setTextColor(Color.parseColor("#aaaaaa"));
 
@@ -72,7 +96,8 @@ public class ChartInnerFragment extends BaseFragment {
 
             infoWrap.addView(info);
         }
-//
+        calculation();
+
         infoWrap.bringToFront();
     }
 
@@ -84,20 +109,121 @@ public class ChartInnerFragment extends BaseFragment {
     @Override
     public void onFragmentSelected(int position) {
         super.onFragmentSelected(position);
-        List<ChartData> datas = new ArrayList<>();
-        datas.add(ChartData.builder().x(0).y(200).build());
-        datas.add(ChartData.builder().x(200).y(500).build());
-        datas.add(ChartData.builder().x(300).y(300).build());
-        datas.add(ChartData.builder().x(400).y(400).build());
-        datas.add(ChartData.builder().x(500).y(100).build());
-        datas.add(ChartData.builder().x(600).y(300).build());
-        datas.add(ChartData.builder().x(700).y(200).build());
-        datas.add(ChartData.builder().x(800).y(600).build());
+        Log.e(TAG, "onFragmentSelected");
+        calculation();
+        setData();
 
-        mGraphView.setWidth( 1500 );
-        mGraphView.setPoint(datas);
-        mGraphView.setmActivity( getActivity() );
-        mGraphView.start();
+    }
+    private void calculation() {
+        helper = new DBHelper(getActivity());
+        long tempDate = mStartDate - ( ( 24 * 3 ) * 60 * 60 * 1000 );
+        long nextTemp = mStartDate + ( ( 24 * 3 ) * 60 * 60 * 1000 );
+        String where = "created between " + tempDate + " and " + nextTemp;
 
+        List<GPSData> datas = helper.selectDBForWhere(where);
+
+        float kmh = 0;
+        long totalTime = 0;
+        double totalDistance = 0;
+
+        for ( int i = 0; i < datas.size(); i++ ) {
+            totalTime += datas.get(i).getTotal_time();
+            totalDistance += datas.get(i).getSum();
+        }
+        try {
+            double time = ( (totalTime / 1000) / (double) 60 ) / (double) 60;
+            float km = (float) (totalDistance / 1000);
+            kmh = (float) (km / time);
+            if(Float.isInfinite(kmh) || Float.isNaN(kmh)){
+                throw new ArithmeticException();
+            }
+        } catch (ArithmeticException e) {
+            e.printStackTrace();
+            kmh = 0;
+        }
+        minView.setText(sdf.format(new Date(totalTime)));
+        meterView.setText(String.valueOf(Math.round(totalDistance)));
+        kmhView.setText(String.format("%.1f", kmh));
+    }
+    private void setData () {
+        mGraphView.initData();
+        List<GPSData> gpsDatas;
+        final List<ChartData> chartDatas = new ArrayList<>();
+        int viewWidth = mGraphView.getMeasuredWidth();
+        Log.e(TAG, String.format("width : %d", mGraphView.getMeasuredWidth()));
+        int x = viewWidth / 7;
+
+        if ( helper != null ) {
+            long tempDate = 0, nextTemp = 0;
+            try {
+                tempDate = fullSdf.parse(fullSdf.format(new Date( mStartDate - ( ( 24 * 3 ) * 60 * 60 * 1000 ) ))).getTime() - 9 * 60 * 60 * 1000;
+                nextTemp = fullSdf.parse(fullSdf.format(new Date( mStartDate + ( ( 24 * 3 ) * 60 * 60 * 1000 ) ))).getTime() - 9 * 60 * 60 * 1000;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            String where = "created between " + tempDate + " and " + nextTemp;
+
+            gpsDatas = helper.selectDBForWhere(where);
+            long compareDate = 0;
+            int count = 0;
+                        /* 데이터 가공 */
+            List<GPSData> tempData = new ArrayList<>();
+            while ( tempDate <= nextTemp ) {
+                compareDate = tempDate + 24 * 60 * 60 * 1000;
+                double totalDistance = 0;
+                long totalTime = 0;
+                for ( int i = 0; i < gpsDatas.size(); i++ ) {
+                    if ( tempDate <= gpsDatas.get(i).getCreated() && compareDate > gpsDatas.get(i).getCreated() ) {
+                        Log.e(TAG, "tempDate : " + fullSdf.format(new Date(tempDate)) + "/" + fullSdf.format(new Date(compareDate)) + "/" + fullSdf.format(new Date(gpsDatas.get(i).getCreated())));
+                        totalDistance += gpsDatas.get(i).getSum();
+                        totalTime += gpsDatas.get(i).getTotal_time();
+                    }
+                }
+                tempData.add(GPSData.builder().total_time(totalTime).sum(totalDistance).created(tempDate).build());
+
+                tempDate += 24 * 60 * 60 * 1000;
+                count++;
+            }
+            if ( gpsDatas.size() == 0 ) {
+                mGraphView.setDataCheck(true);
+            }
+            gpsDatas = tempData;
+
+            for ( int i = 0; i < 7; i++ ) {
+                if ( i < gpsDatas.size() ) {
+                    chartDatas.add(ChartData.builder().x(x).y((float) gpsDatas.get(i).getSum()).build());
+                } else {
+                    chartDatas.add(ChartData.builder().x(x).y(0).build());
+                }
+                x += viewWidth / 7;
+//                x += 100;
+            }
+        } else {
+            for ( int i = 0; i < 7; i++ ) {
+
+            }
+        }
+
+        mGraphView.setWidth( 1500, mBottomPadding );
+        mGraphView.post(new Runnable() {
+            @Override
+            public void run() {
+                mGraphView.setPoint(chartDatas);
+                mGraphView.setmActivity( getActivity() );
+                mGraphView.start();
+            }
+        });
+
+    }
+    public void setDate ( long date ) {
+        mStartDate = date;
+        if ( mGraphView != null )
+            setData();
+        Log.e(TAG, "setDate");
+        Log.e(TAG, fullSdf.format(new Date(date)));
+    }
+    public void setBottomPadding ( int bottomPadding ) {
+        mBottomPadding = bottomPadding;
     }
 }
