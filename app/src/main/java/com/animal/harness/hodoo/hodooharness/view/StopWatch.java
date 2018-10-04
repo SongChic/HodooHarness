@@ -181,6 +181,9 @@ public class StopWatch extends BaseView<StopWatch> implements Runnable {
             }
         }.start();
     }
+    public long getTime () {
+        return time * 1000;
+    }
 
 
     @Override

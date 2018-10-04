@@ -18,5 +18,8 @@ public class HodooConstant {
     /* GPS */
     public static final long MIN_DISTANCE = 10;
     public static final long MIN_UPDATE_TIME = 1000;
+
+    /* DataBases */
     public static final String LOCATION_DB_NAME = "LOCATION_DB";
+    public static final int DATABASE_VERSION = 1;
 }

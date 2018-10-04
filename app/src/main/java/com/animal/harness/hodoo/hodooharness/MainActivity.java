@@ -1,5 +1,7 @@
 package com.animal.harness.hodoo.hodooharness;
 
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -13,7 +15,7 @@ import android.widget.LinearLayout;
 
 import com.animal.harness.hodoo.hodooharness.adapter.TabsPagerAdapter;
 import com.animal.harness.hodoo.hodooharness.base.BaseActivity;
-import com.animal.harness.hodoo.hodooharness.fragment.MainFragment;
+import com.animal.harness.hodoo.hodooharness.fragment.BluetoothFragment;
 
 public class MainActivity extends BaseActivity<MainActivity> {
     int[] mBtn = {
@@ -33,6 +35,7 @@ public class MainActivity extends BaseActivity<MainActivity> {
     };
     TabsPagerAdapter adapter;
     LinearLayout fragmentWrap;
+    private BluetoothFragment bluetoothFragment;
     ViewPager viewPager;
     boolean settingFlag = false;
 
@@ -84,6 +87,12 @@ public class MainActivity extends BaseActivity<MainActivity> {
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         viewPager.setCurrentItem(0);
+        bluetoothFragment = new BluetoothFragment();
+
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.setting_fragment, bluetoothFragment);
+        ft.commit();
     }
 
     @Override
@@ -94,20 +103,30 @@ public class MainActivity extends BaseActivity<MainActivity> {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch ( item.getItemId() ) {
-            case R.id.menu_settings :
+            case R.id.bluetooth_icon :
                 if ( !settingFlag ) {
                     viewPager.setVisibility(View.GONE);
                     fragmentWrap.setVisibility(View.VISIBLE);
-                    FragmentManager fm = getSupportFragmentManager();
-                    FragmentTransaction ft = fm.beginTransaction();
-                    ft.replace(R.id.setting_fragment, new MainFragment());
-                    ft.commit();
-                    item.setIcon(R.drawable.menu_settings_active);
+                    bluetoothFragment.onFragmentSelected();
+
+
+                    Drawable d = item.getIcon();
+                    if ( d != null ) {
+                        d.mutate();
+                        d.setColorFilter(getResources().getColor(R.color.hodoo_menu_active), PorterDuff.Mode.SRC_ATOP);
+                    }
+
                     settingFlag = true;
                 } else {
                     viewPager.setVisibility(View.VISIBLE);
                     fragmentWrap.setVisibility(View.GONE);
-                    item.setIcon(R.drawable.menu_settings);
+                    Drawable d = item.getIcon();
+                    if ( d != null ) {
+                        d.mutate();
+                        d.setColorFilter(getResources().getColor(R.color.hodoo_menu_active), PorterDuff.Mode.SRC_ATOP);
+                    }
+                    d.setColorFilter(getResources().getColor(R.color.hodoo_menu_default), PorterDuff.Mode.SRC_ATOP);
+//                    item.setIcon(R.drawable.menu_settings);
                     settingFlag = false;
                 }
 

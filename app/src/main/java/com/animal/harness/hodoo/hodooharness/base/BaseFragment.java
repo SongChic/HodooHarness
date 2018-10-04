@@ -6,7 +6,5 @@ public abstract class BaseFragment extends Fragment {
     protected final String TAG = getClass().getSimpleName();
     public BaseFragment(){}
     public abstract void onFragmentSelected();
-    public void onFragmentSelected( int position ) {
-
-    }
+    public void onFragmentSelected( int position ) {}
 }

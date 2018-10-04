@@ -35,22 +35,6 @@ public class ChartActivityFragment extends BaseFragment {
     @Override
     public void onFragmentSelected(int position) {
         super.onFragmentSelected(position);
-//        List<PieData> datas = new ArrayList<>();
-//        datas.add(new PieData(30));
-//        datas.add(new PieData(40));
-//        datas.add(new PieData(20));
-//        datas.add(new PieData(10));
-//        datas.add(new PieData(20));
-//        datas.add(new PieData(12.5f));
-//        datas.add(new PieData(12.5f));
-//        datas.add(new PieData(12.5f));
-//        datas.add(new PieData(12.5f));
-//        datas.add(new PieData(12.5f));
-//        datas.add(new PieData(12.5f));
-//        datas.add(new PieData(10));
-//        datas.add(new PieData(20));
-//        datas.add(new PieData(40));
-//        mPieView.setData(getActivity(), datas);
 
         ArrayList<PieHelper> pieHelperArrayList = new ArrayList<PieHelper>();
         pieHelperArrayList.add(new PieHelper(50, Color.parseColor("#ee6156")));

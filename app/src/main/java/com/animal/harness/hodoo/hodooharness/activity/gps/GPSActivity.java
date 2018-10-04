@@ -129,8 +129,8 @@ public class GPSActivity extends BaseActivity<GPSActivity> {
 
                 double lat = location.getLatitude(), lon = location.getLongitude();
                 data = GPSData.builder()
-                        .lat(lat)
-                        .lon(lon)
+//                        .lat(lat)
+//                        .lon(lon)
                         .created(new Date().getTime())
                         .build();
                 mOldLat = lat;
@@ -157,8 +157,8 @@ public class GPSActivity extends BaseActivity<GPSActivity> {
         Location oldLocation = new Location("oldPoint");
         oldLocation.setLatitude(mOldLat);
         oldLocation.setLongitude(mOldLon);
-        data.setLat( location.getLatitude() );
-        data.setLon( location.getLongitude() );
+//        data.setLat( location.getLatitude() );
+//        data.setLon( location.getLongitude() );
         data.setCreated(new Date().getTime());
         data.setSum( data.getSum() + location.distanceTo(oldLocation) );
         binding.setGps(data);

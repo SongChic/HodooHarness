@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.animal.harness.hodoo.hodooharness.R;
+import com.animal.harness.hodoo.hodooharness.constant.HodooConstant;
 import com.animal.harness.hodoo.hodooharness.domain.GPSData;
 
 import java.util.ArrayList;
@@ -16,6 +18,11 @@ public class DBHelper extends SQLiteOpenHelper {
     private Context mContext;
     private String mName;
     private final String TAG = DBHelper.class.getSimpleName();
+    public DBHelper(Context context) {
+        super(context, HodooConstant.LOCATION_DB_NAME, null, HodooConstant.DATABASE_VERSION);
+        mContext = context;
+        mName = HodooConstant.LOCATION_DB_NAME;
+    }
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
         mContext = context;
@@ -26,11 +33,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         StringBuffer sb = new StringBuffer();
         sb.append(" CREATE TABLE " + mName + " (");
-        sb.append(" ID INTEGER PRIMARY KEY AUTOINCREMENT, ");
-        sb.append(" LAT INTEGER, ");
-        sb.append(" LON INTEGER, ");
-        sb.append(" CREATED DATETIME, ");
-        sb.append(" TOTAL_DISTANCE INTEGER ); ");
+        sb.append(" ID INTEGER PRIMARY KEY AUTOINCREMENT, "); //인덱스
+        sb.append(" CREATED DATETIME, "); //작성일
+        sb.append(" TOTAL_TIME INTEGER, "); //총 이동시간
+        sb.append(" TOTAL_DISTANCE INTEGER ); "); //총 이동거리
         db.execSQL(sb.toString());
         Log.e(TAG, "데이터베이스 생성 완료");
         Toast.makeText(mContext, "데이터베이스 생성 완료", Toast.LENGTH_SHORT).show();
@@ -44,13 +50,12 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         StringBuffer sb = new StringBuffer();
         sb.append("INSERT INTO " + mName);
-        sb.append(" (LAT, LON, CREATED, TOTAL_DISTANCE )");
-        sb.append(" VALUES (?, ?, ?, ?)");
+        sb.append(" (TOTAL_TIME, CREATED, TOTAL_DISTANCE )");
+        sb.append(" VALUES (?, ?, ?)");
         db.execSQL(
                 sb.toString(),
                 new Object[]{
-                      data.getLat(),
-                      data.getLon(),
+                      data.getTotal_time(),
                       data.getCreated(),
                       data.getSum()
                 }
@@ -64,10 +69,24 @@ public class DBHelper extends SQLiteOpenHelper {
         while ( cursor.moveToNext() ) {
             GPSData data = new GPSData();
             data.setId(cursor.getInt(0) );
-            data.setLat( cursor.getDouble(1) );
-            data.setLon( cursor.getDouble(2) );
-            data.setCreated( cursor.getLong(3) );
-            data.setSum( cursor.getDouble(4) );
+            data.setCreated( cursor.getLong(1) );
+            data.setTotal_time(cursor.getLong(2));
+            data.setSum( cursor.getDouble(3) );
+            datas.add(data);
+        }
+        return datas;
+    }
+    public List<GPSData> selectDBForWhere ( String where ) {
+        String sql = mContext.getResources().getString(R.string.base_select) + " " + mContext.getResources().getString(R.string.base_db_name) + " where " + where;
+        SQLiteDatabase db = getReadableDatabase();
+        List<GPSData> datas = new ArrayList<>();
+        Cursor cursor = db.rawQuery(sql, null);
+        while ( cursor.moveToNext() ) {
+            GPSData data = new GPSData();
+            data.setId(cursor.getInt(0) );
+            data.setCreated( cursor.getLong(1) );
+            data.setTotal_time(cursor.getLong(2));
+            data.setSum( cursor.getDouble(3) );
             datas.add(data);
         }
         return datas;
@@ -75,5 +94,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public void resetDB() {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("drop table  " + mName);
+        Log.e(TAG, "데이터베이스 삭제 완료");
     }
 }

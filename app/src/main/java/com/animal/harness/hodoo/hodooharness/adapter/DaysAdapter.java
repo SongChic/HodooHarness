@@ -1,41 +1,55 @@
 package com.animal.harness.hodoo.hodooharness.adapter;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v4.view.PagerAdapter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.animal.harness.hodoo.hodooharness.fragment.DaysFragment;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
-public class DaysAdapter extends FragmentStatePagerAdapter {
-    private long mNow;
-    public DaysAdapter(FragmentManager fm, long now) {
-        super(fm);
-        mNow = now;
-    }
-
-    public DaysAdapter(FragmentManager fm) {
-        super(fm);
-    }
-
-    @Override
-    public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-            case 1:
-            case 2:
-                DaysFragment fragment = new DaysFragment();
-                Bundle bundle = new Bundle();
-                bundle.putLong("now", mNow );
-                bundle.putInt("position", position );
-                fragment.setArguments(bundle);
-                return fragment;
-        }
-        return null;
+public class DaysAdapter extends PagerAdapter {
+    private Context mContext;
+    private List<Long> mItems;
+    SimpleDateFormat sdf = new SimpleDateFormat("E");
+    public DaysAdapter (Context context, List<Long> items) {
+        mContext = context;
+        mItems = items;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public boolean isViewFromObject(View view, Object object) {
+        return (view == object);
+    }
+
+    @NonNull
+    @Override
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
+        /* create view */
+        int realPos = position % mItems.size();
+
+
+        LinearLayout wrap = new LinearLayout(mContext);
+        TextView tv = new TextView(mContext);
+        tv.setText(sdf.format(new Date(mItems.get(realPos))));
+        wrap.addView(tv);
+        container.addView(wrap);
+
+        return wrap;
+    }
+
+    @Override
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        container.removeView((View) object);
     }
 }
