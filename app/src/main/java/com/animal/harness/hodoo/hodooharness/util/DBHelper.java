@@ -19,9 +19,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private String mName;
     private final String TAG = DBHelper.class.getSimpleName();
     public DBHelper(Context context) {
-        super(context, HodooConstant.LOCATION_DB_NAME, null, HodooConstant.DATABASE_VERSION);
-        mContext = context;
-        mName = HodooConstant.LOCATION_DB_NAME;
+        this(context, HodooConstant.LOCATION_DB_NAME, null, HodooConstant.DATABASE_VERSION);
     }
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -39,7 +37,6 @@ public class DBHelper extends SQLiteOpenHelper {
         sb.append(" TOTAL_DISTANCE INTEGER ); "); //총 이동거리
         db.execSQL(sb.toString());
         Log.e(TAG, "데이터베이스 생성 완료");
-        Toast.makeText(mContext, "데이터베이스 생성 완료", Toast.LENGTH_SHORT).show();
     }
 
     @Override

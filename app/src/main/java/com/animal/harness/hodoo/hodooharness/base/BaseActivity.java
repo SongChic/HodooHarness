@@ -29,6 +29,7 @@ import com.animal.harness.hodoo.hodooharness.R;
  * Created by Song on 2018-09-10.
  */
 public abstract class BaseActivity<D extends Activity> extends AppCompatActivity {
+    protected Menu menu;
     protected final String TAG = getClass().getSimpleName();
     protected abstract BaseActivity<D> getActivityClass();
 
@@ -66,6 +67,7 @@ public abstract class BaseActivity<D extends Activity> extends AppCompatActivity
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu, menu);
         for ( int i = 0; i < menu.size(); i++ ) {
