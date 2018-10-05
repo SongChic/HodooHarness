@@ -16,8 +16,8 @@ public class HodooConstant {
     public static final int PERMISSION_REQUEST_CODE = 1000;
 
     /* GPS */
-    public static final long MIN_DISTANCE = 10;
-    public static final long MIN_UPDATE_TIME = 1000;
+    public static final long MIN_DISTANCE = 1;
+    public static final long MIN_UPDATE_TIME = 100;
 
     /* DataBases */
     public static final String LOCATION_DB_NAME = "LOCATION_DB";

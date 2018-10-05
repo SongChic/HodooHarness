@@ -352,9 +352,6 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     }
     public void start() {
         /* Database(s) */
-
-
-
         helper = new DBHelper(
                 getContext(),
                 LOCATION_DB_NAME,
@@ -366,12 +363,18 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
             Toast.makeText(getContext(), "권한이 없습니다.", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                HodooConstant.MIN_UPDATE_TIME,
-                HodooConstant.MIN_DISTANCE,
-                mLocationListener //리스너 연결
-        );
+        if (locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER))
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    HodooConstant.MIN_UPDATE_TIME,
+                    HodooConstant.MIN_DISTANCE,
+                    mLocationListener //리스너 연결
+            );
+        if (locationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER))
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                    HodooConstant.MIN_UPDATE_TIME,
+                    HodooConstant.MIN_DISTANCE,
+                    mLocationListener //리스너 연결
+            );
         if ( locationManager != null ) {
             /* GPS 체크 */
             if ( !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ) {

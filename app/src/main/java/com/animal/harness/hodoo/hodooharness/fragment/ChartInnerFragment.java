@@ -114,7 +114,7 @@ public class ChartInnerFragment extends BaseFragment {
         setData();
 
     }
-    private void calculation() {
+    public void calculation() {
         helper = new DBHelper(getActivity());
         long tempDate = mStartDate - ( ( 24 * 3 ) * 60 * 60 * 1000 );
         long nextTemp = mStartDate + ( ( 24 * 3 ) * 60 * 60 * 1000 );

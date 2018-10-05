@@ -20,4 +20,6 @@
     <color name="hodoo_menu_default">#aaaaaa</color>
     <color name="hodoo_menu_active">#ee6156</color>
 
+    <color name="hodoo_point_color">#ddf055</color>
+
 </resources>

@@ -44,5 +44,6 @@ dependencies {
     implementation 'im.dacer:AndroidCharts:1.0.4'
     implementation 'com.android.support:recyclerview-v7:24.2.1'
     implementation 'com.github.ybq:Android-SpinKit:1.1.0'
+    implementation 'com.github.clans:fab:1.6.2'
     /* util 라이브러리 관련 (e) */
 }

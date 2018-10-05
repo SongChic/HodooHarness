@@ -3,14 +3,17 @@ package com.animal.harness.hodoo.hodooharness;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.animal.harness.hodoo.hodooharness.adapter.TabsPagerAdapter;
@@ -35,9 +38,14 @@ public class MainActivity extends BaseActivity<MainActivity> {
     };
     TabsPagerAdapter adapter;
     LinearLayout fragmentWrap;
+    FrameLayout overlay;
+
     private BluetoothFragment bluetoothFragment;
     ViewPager viewPager;
     boolean settingFlag = false;
+
+    private Handler anim;
+    private boolean animState = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,30 +111,26 @@ public class MainActivity extends BaseActivity<MainActivity> {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch ( item.getItemId() ) {
-            case R.id.bluetooth_icon :
+            case R.id.menu_settings :
                 if ( !settingFlag ) {
                     viewPager.setVisibility(View.GONE);
                     fragmentWrap.setVisibility(View.VISIBLE);
                     bluetoothFragment.onFragmentSelected();
+                    this.menu.getItem(1);
 
 
-                    Drawable d = item.getIcon();
-                    if ( d != null ) {
-                        d.mutate();
-                        d.setColorFilter(getResources().getColor(R.color.hodoo_menu_active), PorterDuff.Mode.SRC_ATOP);
-                    }
-
+                    item.setIcon(R.drawable.menu_settings_active);
                     settingFlag = true;
                 } else {
                     viewPager.setVisibility(View.VISIBLE);
                     fragmentWrap.setVisibility(View.GONE);
-                    Drawable d = item.getIcon();
-                    if ( d != null ) {
-                        d.mutate();
-                        d.setColorFilter(getResources().getColor(R.color.hodoo_menu_active), PorterDuff.Mode.SRC_ATOP);
-                    }
-                    d.setColorFilter(getResources().getColor(R.color.hodoo_menu_default), PorterDuff.Mode.SRC_ATOP);
-//                    item.setIcon(R.drawable.menu_settings);
+//                    Drawable d = item.getIcon();
+//                    if ( d != null ) {
+//                        d.mutate();
+//                        d.setColorFilter(getResources().getColor(R.color.hodoo_menu_active), PorterDuff.Mode.SRC_ATOP);
+//                    }
+//                    d.setColorFilter(getResources().getColor(R.color.hodoo_menu_default), PorterDuff.Mode.SRC_ATOP);
+                    item.setIcon(R.drawable.menu_settings);
                     settingFlag = false;
                 }
 

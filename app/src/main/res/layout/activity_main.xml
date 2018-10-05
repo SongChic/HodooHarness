@@ -34,5 +34,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tab_layout"/>
-
+    <!--<include-->
+        <!--android:id="@+id/include_layout"-->
+        <!--layout="@layout/layout_floating"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_above="@+id/day_view"/>-->
 </RelativeLayout>
