@@ -46,9 +46,7 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
     List<ChartData> mBaseDatas = new ArrayList<>();
 
     float preY = -1;
-    int x = 100;
-    int xWidth = 0;
-    int count = 600;
+    int x = 100, xWidth = 0, count = 600, maxIndex = 0;
     private Thread animator = null;
 
     /* tooltip */
@@ -89,11 +87,8 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
 
 
     }
-    public void setmActivity( Activity activity ) {
-        mActivity = activity;
-    }
     public void start() {
-        Log.e(TAG, String.format("view height : %d", getMeasuredHeight() * 80 / 100));
+        animState = true;
         animator = new Thread(this);
         animator.start();
     }
@@ -104,11 +99,15 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
         Log.e(TAG, "draw");
         if ( mBaseDatas.size() == 0 ) return;
 
+
+
         for ( int i = 0; i < mDatas.size(); i++ ) {
             if (mBaseDatas.get(i).getY() >= mDatas.get(i).getY()) {
                 mBaseDatas.get(i).setY( mBaseDatas.get(i).getY() - 8 );
             }
         }
+        if ( mBaseDatas.get(maxIndex).getY() <= mDatas.get(maxIndex).getY() )
+            animState = false;
 
         Paint paint = new Paint();
         Path path = new Path();
@@ -158,13 +157,11 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
                 if ( mDatas.get(i).getY() == minY )
                     pointY = mBaseDatas.get(i).getY();
                 else {
-                    if ( i != 0 ) {
+                    if ( i != 0 )
                         if ( mDatas.get( i - 1 ).getY() < mDatas.get(i).getY() )
-                            pointY = mBaseDatas.get(i).getY() - 100;
+                            pointY = mBaseDatas.get(i).getY();
                         else
                             pointY = mBaseDatas.get(i).getY() + 100;
-                    }
-
                 }
 
             }
@@ -250,8 +247,11 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
         float max = 0;
 
         for ( int i = 0; i < data.size(); i++ )
-            if ( max < data.get(i).getY() )
+            if ( max < data.get(i).getY() ) {
                 max = data.get(i).getY();
+                maxIndex = i;
+            }
+        
 
         //MAX_Y
         for ( int i = 0; i < data.size(); i++ )
@@ -269,13 +269,8 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
     @Override
     public void run() {
         Log.e(TAG, "view in tread");
-        while(count >= 0){
-            mActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    invalidate();
-                }
-            });
+        while(animState){
+            postInvalidate();
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
@@ -284,7 +279,7 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
             count--;
         }
         animator.interrupt();
-
+        Log.e(TAG, "thread end");
     }
 
     @Override
