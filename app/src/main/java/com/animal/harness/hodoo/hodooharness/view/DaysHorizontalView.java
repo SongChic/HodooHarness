@@ -35,24 +35,16 @@ public class DaysHorizontalView extends RelativeLayout implements View.OnTouchLi
                 void onClick(View v);
         }
 
-        public static final int PREV_STEP = 0;
-        public static final int NEXT_STEP = 1;
+        public static final int PREV_STEP = 0, NEXT_STEP = 1;
 
         private int SLIDE_LIMIT = 3;
 
         /* rolling validate(s) */
-        private int target = 0;
-        private int preTarget = 0;
-        private int nextTarget = 0;
-        private int width = 0;
-        private int mViewWidth = 0;
-        private int mPadding = 30;
+        private int target = 0, preTarget = 0, nextTarget = 0, mWidth = 0, mViewWidth = 0, mPadding = 30;
         /* rolling validate(e) */
 
         /* data validation(s) */
-        private SimpleDateFormat sdf = new SimpleDateFormat("E");
-        private SimpleDateFormat todaySdf = new SimpleDateFormat("M/d");
-        private SimpleDateFormat convertSdf = new SimpleDateFormat("yyyy.MM.dd");
+        private SimpleDateFormat sdf = new SimpleDateFormat("E"), todaySdf = new SimpleDateFormat("M/d"),convertSdf = new SimpleDateFormat("yyyy.MM.dd");
         private long mDate = 0;
         /* data validation(e) */
 
@@ -154,18 +146,18 @@ public class DaysHorizontalView extends RelativeLayout implements View.OnTouchLi
         @Override
         protected void onLayout(boolean changed, int l, int t, int r, int b) {
                 Log.e(TAG, "onLayout");
-                if ( width == 0 ) {
+                if ( mWidth == 0 ) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                                width = this.getMeasuredWidth();
-                                mViewWidth = (width) / 8;
+                                mWidth = this.getMeasuredWidth();
+                                mViewWidth = (mWidth) / 8;
 
                                 for (int i = 0; i < wrap.getChildCount(); i++) {
-                                        wrap.getChildAt(i).setX(width);
+                                        wrap.getChildAt(i).setX(mWidth);
                                         wrap.getChildAt(i).setZ(0);
                                 }
                                 wrap.getChildAt(target).setX(0);
-                                wrap.getChildAt(preTarget).setX(-(width));
-                                wrap.getChildAt(nextTarget).setX(width);
+                                wrap.getChildAt(preTarget).setX(-(mWidth));
+                                wrap.getChildAt(nextTarget).setX(mWidth);
                         }
                         new Handler().post(new Runnable() {
                                 @Override
@@ -193,13 +185,13 @@ public class DaysHorizontalView extends RelativeLayout implements View.OnTouchLi
 
                                         }
                                 });
-                                wrap.getChildAt(target).animate().translationX( width ).withLayer();
+                                wrap.getChildAt(target).animate().translationX(mWidth).withLayer();
                                 setPosition(false);
-                                wrap.getChildAt(preTarget).setX(-(width));
+                                wrap.getChildAt(preTarget).setX(-(mWidth));
 
                         } else {
-                                if ( wrap.getChildAt(nextTarget).getX() != width )
-                                        wrap.getChildAt(nextTarget).setX(width);
+                                if ( wrap.getChildAt(nextTarget).getX() != mWidth)
+                                        wrap.getChildAt(nextTarget).setX(mWidth);
                                 wrap.getChildAt(nextTarget).animate().translationX(0).withLayer().withStartAction(new Runnable() {
                                         @Override
                                         public void run() {
@@ -207,10 +199,10 @@ public class DaysHorizontalView extends RelativeLayout implements View.OnTouchLi
                                                 mCallback.onChange(NEXT_STEP, nextTarget);
                                         }
                                 });
-                                wrap.getChildAt(target).animate().translationX( -(width) ).withLayer();
-                                wrap.getChildAt(preTarget).setX(width);
+                                wrap.getChildAt(target).animate().translationX( -(mWidth) ).withLayer();
+                                wrap.getChildAt(preTarget).setX(mWidth);
                                 setPosition(true);
-                                wrap.getChildAt(nextTarget).animate().translationX(width).withLayer();
+                                wrap.getChildAt(nextTarget).animate().translationX(mWidth).withLayer();
                                 wrap.getChildAt(nextTarget).setZ(100);
                         }
                 }

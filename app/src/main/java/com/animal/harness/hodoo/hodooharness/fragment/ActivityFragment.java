@@ -109,6 +109,10 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
 
     private RelativeLayout wrap;
 
+    float one = 0;
+    float two = 0;
+    float three = 0;
+
     public ActivityFragment(){}
 
     @Nullable
@@ -296,6 +300,9 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                 break;
         }
     }
+    private void reset() {
+
+    }
 
     class Margin implements LeadingMarginSpan.LeadingMarginSpan2
     {
@@ -362,7 +369,16 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                     * Math.cos(Math.toRadians(location.getLatitude())) * Math.cos(Math.toRadians(mOldLat));
             double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
             double dist = earthRadius * c;
-            Log.e(TAG, String.format("km : %f", dist));
+
+            one += location.distanceTo(oldLocation);
+            two += dist;
+            three += TestUtil.distance(mOldLat, mOldLon, location.getLatitude(), location.getLongitude());
+
+
+            Log.e(TAG, String.format("1안 km : %f", one));
+            Log.e(TAG, String.format("2안 km : %f", two));
+            Log.e(TAG, String.format("3안 km : %f", three));
+
             /* 2안 (e) */
 
             mOldLat = location.getLatitude();

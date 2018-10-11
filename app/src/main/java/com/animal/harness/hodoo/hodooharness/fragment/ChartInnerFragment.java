@@ -41,7 +41,6 @@ public class ChartInnerFragment extends BaseFragment {
 
     SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy.MM.dd");
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -94,7 +93,6 @@ public class ChartInnerFragment extends BaseFragment {
             info.addView(min);
             info.setBackgroundResource(R.drawable.info_round);
             info.setPadding(20, 20, 20, 20);
-
             infoWrap.addView(info);
 
             if ( i != 2 ) {
@@ -152,7 +150,10 @@ public class ChartInnerFragment extends BaseFragment {
             e.printStackTrace();
             kmh = 0;
         }
-        minView.setText(sdf.format(new Date(totalTime)));
+
+        long min = totalTime / 60 / 1000;
+        long hour = min / 60;
+        minView.setText(String.valueOf( min + (hour * 10) ));
         meterView.setText(String.valueOf(Math.round(totalDistance)));
         kmhView.setText(String.format("%.1f", kmh));
     }
@@ -217,14 +218,8 @@ public class ChartInnerFragment extends BaseFragment {
         }
 
         mGraphView.setWidth( 1500, mBottomPadding );
-        mGraphView.post(new Runnable() {
-            @Override
-            public void run() {
-                mGraphView.setPoint(chartDatas);
-                mGraphView.setmActivity( getActivity() );
-                mGraphView.start();
-            }
-        });
+        mGraphView.setPoint(chartDatas);
+        mGraphView.start();
 
     }
     public void setDate ( long date ) {
