@@ -50,8 +50,8 @@
             android:id="@+id/stop_watch_reset"
             android:layout_width="100dp"
             android:layout_height="32dp"
-            android:text="초기화"
-            android:background="#aaaaaa"
+            android:text="기록"
+            android:background="@drawable/round_button"
             android:visibility="gone"/>
         <Button
             android:layout_centerHorizontal="true"

@@ -61,7 +61,6 @@ public class ChartFragment extends BaseFragment implements View.OnClickListener 
     }
 
     public void onFragmentSelected( int position ) {
-        Log.e(TAG, "ChartFragment onFragmentSelected");
         adapter.refresh(0);
     }
 
@@ -153,7 +152,6 @@ public class ChartFragment extends BaseFragment implements View.OnClickListener 
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onGlobalLayout() {
-                Log.e(TAG, String.format("binding.dayView height : %d", binding.dayView.getHeight()));
                 binding.dayView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
@@ -217,14 +215,12 @@ public class ChartFragment extends BaseFragment implements View.OnClickListener 
                             }
                         }).create();
                 builder.show();
-                Log.e(TAG, "fab1 click");
                 break;
         }
     }
     private void showFABMenu(){
         isFABOpen=true;
         binding.includeLayout.fab1.animate().alpha(1).translationY( -( binding.includeLayout.fab.getHeight() + 50 ) ).scaleX(1).scaleY(1).withLayer();
-        Log.e(TAG, String.format("rotation : %f", binding.includeLayout.fab.getRotation()));
         if ( binding.includeLayout.fab.getRotation() != 0 )
             binding.includeLayout.fab.setRotation(0);
         binding.includeLayout.fab.animate().rotationBy(135).withLayer();

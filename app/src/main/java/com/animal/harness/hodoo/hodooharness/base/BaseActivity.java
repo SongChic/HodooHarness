@@ -11,6 +11,8 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -32,10 +34,18 @@ public abstract class BaseActivity<D extends Activity> extends AppCompatActivity
     protected Menu menu;
     protected final String TAG = getClass().getSimpleName();
     protected abstract BaseActivity<D> getActivityClass();
+    private String nowTitle = "";
+    private Toolbar mToolbar;
 
     public interface CustomCallback {
         void onClick(DialogInterface dialog, int which);
     }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     public AlertDialog.Builder showAlertDialog(String title, String content, int cancelStr) {
         AlertDialog.Builder builder = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -52,21 +62,27 @@ public abstract class BaseActivity<D extends Activity> extends AppCompatActivity
         return builder;
     }
     public void setTitleBar( String titleStr ) {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e(TAG, "back btn touch");
-            }
-        });
+        if ( mToolbar == null ) {
+            mToolbar = findViewById(R.id.toolbar);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e(TAG, "back btn touch");
+                }
+            });
+            setSupportActionBar(mToolbar);
+        }
+
         TextView title = findViewById(R.id.title_str);
         title.setText(titleStr);
         title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-        setSupportActionBar(toolbar);
+
+        nowTitle = titleStr;
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.e(TAG, "onCreateOptionsMenu");
         this.menu = menu;
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu, menu);
@@ -89,5 +105,8 @@ public abstract class BaseActivity<D extends Activity> extends AppCompatActivity
     }
     public boolean checkGPS() {
        return (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+    }
+    public String getNowTitle() {
+        return nowTitle;
     }
 }

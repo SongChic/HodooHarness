@@ -9,4 +9,17 @@
         <item>@string/gps_permission_info</item>
         <item>@string/gps_permission_info</item>
     </string-array>
+
+    <integer-array name="main_btn_default">
+        <item>@drawable/tab_01</item>
+        <item>@drawable/tab_02</item>
+        <item>@drawable/tab_03</item>
+    </integer-array>
+    <integer-array name="main_btn_active">
+        <item>@drawable/tab_01_active</item>
+        <item>@drawable/tab_02_active</item>
+        <item>@drawable/tab_03</item>
+    </integer-array>
+
+
 </resources>

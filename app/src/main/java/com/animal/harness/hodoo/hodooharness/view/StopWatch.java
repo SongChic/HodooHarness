@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -16,7 +17,6 @@ import com.animal.harness.hodoo.hodooharness.util.HodooUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Handler;
 
 public class StopWatch extends BaseView<StopWatch> implements Runnable {
     public interface TimeCallback {
@@ -34,9 +34,13 @@ public class StopWatch extends BaseView<StopWatch> implements Runnable {
     float startAngle = 270;
     float angle = 0;
     int time = 0;
+    double mTotalDistance = 0;
     int intervalTime = 1000;
 
     private TimeCallback mTimeCallback;
+
+    /* minute x, y / meter x, y */
+    private float minX, minY, meterX, meterY;
 
     /* paint (s) */
     private Paint linePaint;
@@ -44,19 +48,18 @@ public class StopWatch extends BaseView<StopWatch> implements Runnable {
     private Paint strokePaint;
     private Paint paint;
     private Paint circlePaint;
+    private Paint distancePaint;
     /* paint (e) */
 
     SimpleDateFormat sdf = new SimpleDateFormat("m");
     private Thread animation = null;
 
     public StopWatch(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public StopWatch(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public StopWatch(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -100,6 +103,11 @@ public class StopWatch extends BaseView<StopWatch> implements Runnable {
 
         circlePaint = new Paint();
         circlePaint.setColor(Color.parseColor("#ee6156"));
+
+        distancePaint = new Paint();
+        distancePaint.setColor(Color.parseColor("#f99088"));
+        distancePaint.setAntiAlias(true);
+        distancePaint.setTextSize(HodooUtil.spToPx(getContext(), 27));
     }
 
     @Override
@@ -133,14 +141,68 @@ public class StopWatch extends BaseView<StopWatch> implements Runnable {
         //340, 60
         canvas.drawCircle( x, y, 20f, circlePaint);
         Paint textPaint = new Paint();
-        textPaint.setColor(Color.BLACK);
+        textPaint.setColor(Color.parseColor("#ee6156"));
         textPaint.setAntiAlias(true);
-        textPaint.setTextSize(200);
+        textPaint.setTextSize(HodooUtil.spToPx(getContext(), 40));
+
+        Paint minPaint = new Paint();
+        minPaint.setColor(Color.parseColor("#666666"));
+        minPaint.setAntiAlias(true);
+        minPaint.setTextSize(HodooUtil.spToPx(getContext(), 40));
         float textWidth = textPaint.measureText(sdf.format(new Date( time * 1000 )));
-        canvas.drawText(sdf.format(new Date( time * 1000 )), startX + (width / 2) - (textWidth / 2), startY + (height / 2), textPaint);
+
+        float minWidth = calcuWidth(
+                new String[]{
+                        time < 60 ? String.valueOf(time) : sdf.format(new Date( time * 1000 )),
+                        time < 60 ? "sec" : "min"
+                },
+                new Paint[]{
+                        textPaint,
+                        minPaint
+                }
+        );
+        canvas.drawText(time < 60 ? String.valueOf(time) : sdf.format(new Date( time * 1000 )), startX + (width / 2) - (minWidth / 2) - 20, startY + (height / 2), textPaint);
+        canvas.drawText(time < 60 ? "sec" : "min", startX + (width / 2) + (minWidth / 2) - minPaint.measureText("min"), startY + (height / 2), minPaint);
+
+        Paint meterPaint = new Paint();
+        meterPaint.setColor(Color.parseColor("#666666"));
+        meterPaint.setAntiAlias(true);
+        meterPaint.setTextSize(HodooUtil.spToPx(getContext(), 16));
+
+        String meterStr = "m";
+        double meter = mTotalDistance;
+        if ( mTotalDistance > 1000 ) {
+            meterStr = "km";
+            meter = meter / 1000;
+        }
+
+        float meterWidth = calcuWidth(
+          new String[]{ mTotalDistance > 1000 ? String.format("%.1f", meter) : String.valueOf((int) meter), meterStr },
+          new Paint[]{distancePaint, meterPaint}
+        );
+        canvas.drawText(
+                mTotalDistance > 1000 ? String.format("%.1f", meter) : String.valueOf((int) meter), //text
+                startX + (width / 2) - ( meterWidth / 2 ), //x
+                startY + (height / 2) + measureHeight(sdf.format(new Date( time * 1000 )) + 20, textPaint) , //y
+                distancePaint //paint
+        );
+        canvas.drawText(meterStr, startX + (width / 2) + ( meterWidth / 2 ) - meterPaint.measureText(meterStr), startY + (height / 2) + measureHeight(sdf.format(new Date( time * 1000 )) + 20, textPaint) , meterPaint);
+
         if ( mTimeCallback != null )
             mTimeCallback.onResult(time);
 
+    }
+    public int measureHeight(String text, Paint paint) {
+        Rect result = new Rect();
+        // Measure the text rectangle to get the height
+        paint.getTextBounds(text, 0, text.length(), result);
+        return result.height();
+    }
+    public float calcuWidth ( String[] texts, Paint[] paints) {
+        float result = 0;
+        for ( int i = 0; i < texts.length; i++ )
+            result += paints[i].measureText(texts[i]);
+        return result;
     }
 
     public void setCallback( TimeCallback callback ) {
@@ -178,6 +240,7 @@ public class StopWatch extends BaseView<StopWatch> implements Runnable {
                         e.printStackTrace();
                     }
                 }
+                mTotalDistance = 0;
             }
         }.start();
     }
@@ -192,12 +255,21 @@ public class StopWatch extends BaseView<StopWatch> implements Runnable {
             if ( angle == 360 ) break;
             postInvalidate();
             angle += 0.1;
-            time++;
+
             try {
                 Thread.sleep(intervalTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            time++;
         }
+        startState = false;
+    }
+    public void setTotalDistance(double totalDistance) {
+        mTotalDistance = totalDistance;
+        postInvalidate();
+    }
+    public double getTotalDistance() {
+        return mTotalDistance;
     }
 }
