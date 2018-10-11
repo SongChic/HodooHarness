@@ -45,8 +45,7 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
     List<ChartData> mDatas = new ArrayList<>();
     List<ChartData> mBaseDatas = new ArrayList<>();
 
-//    DataPoint[] mBasePath = null;
-//    DataPoint[] mPath = null;
+    float preY = -1;
     int x = 100;
     int xWidth = 0;
     int count = 600;
@@ -123,9 +122,9 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
         paint.setPathEffect(new CornerPathEffect(200) );   // set the path effect when they join.
         paint.setAntiAlias(true);
         path.moveTo(mPadding, minY);
-        for (int i = 0; i < mBaseDatas.size(); i++){
+        for (int i = 0; i < mBaseDatas.size(); i++)
             path.lineTo(mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY());
-        }
+
         path.lineTo(mBaseDatas.size() * x, minY);
 
         canvas.drawPath(path, paint);
@@ -149,11 +148,33 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
         pointStrokePaint.setStrokeCap(Paint.Cap.ROUND);
         pointStrokePaint.setStrokeWidth(40);
 
+        /* set point (s) */
         for (int i = 0; i < mBaseDatas.size(); i++){
 //            float y = mBaseDatas.get(i).getY() != maxY / 100 * 100  ? mBaseDatas.get(i).getY() + 100 : mBaseDatas.get(i).getY();
-            canvas.drawPoint( mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY(), pointStrokePaint );
-            canvas.drawPoint( mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY(), pointPaint );
+            float pointY = 0;
+            if ( preY == -1 ) {
+                pointY = mBaseDatas.get(i).getY();
+            } else {
+                if ( mDatas.get(i).getY() == minY )
+                    pointY = mBaseDatas.get(i).getY();
+                else {
+                    if ( i != 0 ) {
+                        if ( mDatas.get( i - 1 ).getY() < mDatas.get(i).getY() )
+                            pointY = mBaseDatas.get(i).getY() - 100;
+                        else
+                            pointY = mBaseDatas.get(i).getY() + 100;
+                    }
+
+                }
+
+            }
+
+            canvas.drawPoint( mBaseDatas.get(i).getX(), pointY, pointStrokePaint );
+            canvas.drawPoint( mBaseDatas.get(i).getX(), pointY, pointPaint );
+            preY = mBaseDatas.get(i).getY();
         }
+        /* set point (e) */
+
         if ( tooltipState ) {
             /* 안쪽면 */
             Paint tPaint = new Paint();
@@ -234,7 +255,10 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
 
         //MAX_Y
         for ( int i = 0; i < data.size(); i++ )
-            data.get(i).setY( maxY * ((data.get(i).getY()) / max * 100) / 100 );
+            if ( data.get(i).getY() == 0 )
+                data.get(i).setY( 0 );
+            else
+                data.get(i).setY( maxY * ((data.get(i).getY()) / max * 100) / 100 );
 
         Log.e(TAG, String.format("max : %f", max));
         mDatas = data;

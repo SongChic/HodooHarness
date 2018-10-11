@@ -83,7 +83,7 @@
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="초기화"
+                android:text="기록"
                 android:onClick="@{activity::onClick}"
                 />
             <Button

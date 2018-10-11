@@ -3,13 +3,13 @@
     <item>
         <shape>
             <solid android:color="@color/hodoo_menu_active"/>
+            <corners android:radius="5dp"/>
         </shape>
     </item>
     <item>
         <shape>
-            <stroke android:color="#aaaaaa"
-                android:width="2dp"/>
-            <solid android:color="@color/white"/>
+            <solid android:color="@color/hodoo_menu_default"/>
+            <corners android:radius="5dp"/>
         </shape>
     </item>
 </transition>

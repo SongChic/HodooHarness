@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -95,6 +96,16 @@ public class ChartInnerFragment extends BaseFragment {
             info.setPadding(20, 20, 20, 20);
 
             infoWrap.addView(info);
+
+            if ( i != 2 ) {
+                TextView tv = new TextView(getContext());
+                tv.setText(":");
+                tv.setTextColor(ContextCompat.getColor(getContext(), R.color.hodoo_menu_default));
+                tv.setTextSize( 50 );
+
+                Log.e(TAG, String.format("tv height : %d", tv.getHeight()));
+                infoWrap.addView(tv);
+            }
         }
         calculation();
 

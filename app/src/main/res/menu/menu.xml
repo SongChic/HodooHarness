@@ -8,7 +8,7 @@
         app:showAsAction="always"/>
     <item
         android:icon="@drawable/menu_bluetooth"
-        android:id="@+id/bluetooth_icon"
+        android:id="@+id/menu_bluetooth"
         android:title="블루투스"
         app:showAsAction="always"/>
     <item

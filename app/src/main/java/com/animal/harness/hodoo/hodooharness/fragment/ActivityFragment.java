@@ -44,8 +44,10 @@ import com.animal.harness.hodoo.hodooharness.R;
 import com.animal.harness.hodoo.hodooharness.base.BaseFragment;
 import com.animal.harness.hodoo.hodooharness.constant.HodooConstant;
 import com.animal.harness.hodoo.hodooharness.domain.GPSData;
+import com.animal.harness.hodoo.hodooharness.service.StopWatchService;
 import com.animal.harness.hodoo.hodooharness.util.DBHelper;
 import com.animal.harness.hodoo.hodooharness.util.HodooUtil;
+import com.animal.harness.hodoo.hodooharness.util.TestUtil;
 import com.animal.harness.hodoo.hodooharness.view.StopWatch;
 
 import java.util.Date;
@@ -74,6 +76,8 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         public void onLocationChanged(Location location) {
             Log.d("test", "onLocationChanged, location:" + location);
             calculation(location);
+            if ( data != null && stopWatch.getTotalDistance() != data.getSum() )
+                stopWatch.setTotalDistance(data.getSum());
         }
 
         @Override
@@ -100,63 +104,65 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
             "일반적으로 분리불안증을 가지고 있는 반려견의 경우에 가장 좋은 처방약은 바로 산책입니다.",
     };
 
+    /* Service */
+    private StopWatchService mService;
+
+    private RelativeLayout wrap;
+
     public ActivityFragment(){}
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //stop_watch
-        RelativeLayout wrap = (RelativeLayout) inflater.inflate(R.layout.fragment_stopwatch, container, false);
-        RelativeLayout btnWrap = wrap.findViewById(R.id.stop_watch_btn);
-        tipsIcon = wrap.findViewById(R.id.tips);
-        tipsContent = wrap.findViewById(R.id.tips_content);
+        if ( wrap != null ) {
+            return wrap;
+        } else {
+            wrap = (RelativeLayout) inflater.inflate(R.layout.fragment_stopwatch, container, false);
+            RelativeLayout btnWrap = wrap.findViewById(R.id.stop_watch_btn);
+            tipsIcon = wrap.findViewById(R.id.tips);
+            tipsContent = wrap.findViewById(R.id.tips_content);
 
-        tipsIcon.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-            @Override
-            public void onGlobalLayout() {
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tipsContent.getLayoutParams();
-                params.setMargins(0, tipsIcon.getHeight() / 2, 0, 0);
-                tipsContent.setLayoutParams(params);
-                if ( count > tipsStr.length )
+            tipsIcon.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onGlobalLayout() {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tipsContent.getLayoutParams();
+                    params.setMargins(0, tipsIcon.getHeight() / 2, 0, 0);
+                    tipsContent.setLayoutParams(params);
+                    if (count > tipsStr.length - 1)
                         count = 0;
 
-                SpannableString ss = new SpannableString(tipsStr[count]);
-                ss.setSpan(new Margin(1, tipsIcon.getWidth() + 20), 0, ss.length(), 0);
-                tipsContent.setText(ss);
+                    SpannableString ss = new SpannableString(tipsStr[count]);
+                    ss.setSpan(new Margin(1, tipsIcon.getWidth() + 20), 0, ss.length(), 0);
+                    tipsContent.setText(ss);
 //                params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, tipsContent.getMeasuredHeight());
 //                ((RelativeLayout) tipsContent.getParent()).setLayoutParams(params);
-                Log.e(TAG, String.format("tipsContent height : %d", tipsContent.getHeight()));
+                    Log.e(TAG, String.format("tipsContent height : %d", tipsContent.getHeight()));
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setTipText();
-                        count++;
-                    }
-                }, 1000 * 30);
-                tipsIcon.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setTipText();
+                            count++;
+                        }
+                    }, 1000 * 30);
+                    tipsIcon.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
 
-        stopWatchStart = wrap.findViewById(R.id.stop_watch_start);
-        stopWatchReset = wrap.findViewById(R.id.stop_watch_reset);
-        stopWatchStart.setOnClickListener(this);
-        stopWatchReset.setOnClickListener(this);
-        stopWatch = wrap.findViewById(R.id.stop_watch);
-        backgroundColorAnimator = ObjectAnimator.ofObject(stopWatchStart,
-                "textColor",
-                new ArgbEvaluator(),
-                Color.WHITE,
-                Color.BLACK);
-        backgroundColorAnimator.setDuration(1000);
-//        helper = new DBHelper(
-//                getContext(),
-//                LOCATION_DB_NAME,
-//                null,
-//                1
-//        );
-//        helper.resetDB();
+            stopWatchStart = wrap.findViewById(R.id.stop_watch_start);
+            stopWatchReset = wrap.findViewById(R.id.stop_watch_reset);
+            stopWatchStart.setOnClickListener(this);
+            stopWatchReset.setOnClickListener(this);
+            stopWatch = wrap.findViewById(R.id.stop_watch);
+            backgroundColorAnimator = ObjectAnimator.ofObject(stopWatchStart,
+                    "textColor",
+                    new ArgbEvaluator(),
+                    Color.WHITE,
+                    Color.BLACK);
+            backgroundColorAnimator.setDuration(1000);
+        }
 
         return wrap;
     }
@@ -266,7 +272,7 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                     stopWatchStart.setText("시작");
                 }
                 stopWatch.reset();
-                Log.e(TAG, String.format("총 이동거리 : %2fm", data.getSum()));
+//                Log.e(TAG, String.format("총 이동거리 : %2fm", data.getSum()));
 
                 stopWatchStart.animate().translationX( 0 ).setDuration(500).withLayer();
                 v.animate().alpha(0).setDuration(500).withLayer().withEndAction(new Runnable() {
@@ -276,8 +282,12 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                     }
                 });
                 restartState = false;
-                Log.e(TAG, "stopWatchReset");
                 moveTime += stopWatch.getTime();
+                if ( data == null ) {
+                    Toast.makeText(getContext(), "데이터 저장에 실패했습니다.\n잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
                 data.setTotal_time(moveTime);
 //                Log.e(TAG, String.format("is enabled", locationManager.isLocationEnabled()));
                 if ( helper != null ) helper.insertDB(data);
@@ -338,15 +348,32 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
             oldLocation.setLatitude(mOldLat);
             oldLocation.setLongitude(mOldLon);
             data.setCreated(new Date().getTime());
-            data.setSum( data.getSum() + location.distanceTo(oldLocation) );
 
+            //            data.setSum( data.getSum() + location.distanceTo(oldLocation) );
+            data.setSum( data.getSum() + TestUtil.distance(mOldLat, mOldLon, location.getLatitude(), location.getLongitude()) ); // 3안
+
+            /* 2안 (s) */
+            double earthRadius = 3958.75; // miles (or 6371.0 kilometers)
+            double dLat = Math.toRadians(location.getLatitude()-mOldLat);
+            double dLng = Math.toRadians(location.getLongitude()-mOldLon);
+            double sindLat = Math.sin(dLat / 2);
+            double sindLng = Math.sin(dLng / 2);
+            double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+                    * Math.cos(Math.toRadians(location.getLatitude())) * Math.cos(Math.toRadians(mOldLat));
+            double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            double dist = earthRadius * c;
+            Log.e(TAG, String.format("km : %f", dist));
+            /* 2안 (e) */
 
             mOldLat = location.getLatitude();
             mOldLon = location.getLongitude();
             Log.e(TAG, String.format("총 이동거리 : %2fm", data.getSum()));
         } else {
-            Toast.makeText(getContext(), "잠시 후 다시 시도 해주시기 바랍니다.", Toast.LENGTH_SHORT).show();
+            data = GPSData.builder().build();
+//            Toast.makeText(getContext(), "잠시 후 다시 시도 해주시기 바랍니다.", Toast.LENGTH_SHORT).show();
         }
+
+
 
 
     }
@@ -416,5 +443,10 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         super.startActivityForResult(intent, requestCode, options);
         if ( requestCode == gpsCheckState )
             start();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }
