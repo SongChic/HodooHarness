@@ -1,10 +1,16 @@
 package com.animal.harness.hodoo.hodooharness;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -19,9 +25,13 @@ import android.widget.LinearLayout;
 
 import com.animal.harness.hodoo.hodooharness.adapter.TabsPagerAdapter;
 import com.animal.harness.hodoo.hodooharness.base.BaseActivity;
+import com.animal.harness.hodoo.hodooharness.constant.HodooConstant;
 import com.animal.harness.hodoo.hodooharness.fragment.BluetoothFragment;
 import com.animal.harness.hodoo.hodooharness.util.HodooUtil;
 import com.animal.harness.hodoo.hodooharness.util.TabLayoutUtils;
+
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class MainActivity extends BaseActivity<MainActivity> {
     TypedArray mBtnArr, mBtnActiveArr;
@@ -107,18 +117,11 @@ public class MainActivity extends BaseActivity<MainActivity> {
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
         viewPager.setCurrentItem(0);
-        bluetoothFragment = new BluetoothFragment();
-
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.setting_fragment, bluetoothFragment);
-        ft.commit();
     }
 
     @Override
     public void setTitleBar(String titleStr) {
         super.setTitleBar(titleStr);
-        Log.e(TAG, "titleStr : " + titleStr);
     }
 
     @Override
@@ -129,7 +132,16 @@ public class MainActivity extends BaseActivity<MainActivity> {
                 int color = ContextCompat.getColor(this, R.color.hodoo_menu_default);
                 Drawable d = item.getIcon();
                 String title = "";
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+
                 if ( !settingFlag ) {
+                    bluetoothFragment = new BluetoothFragment();
+
+
+                    ft.replace(R.id.setting_fragment, bluetoothFragment);
+                    ft.commit();
+
                     viewPager.setVisibility(View.GONE);
                     fragmentWrap.setVisibility(View.VISIBLE);
                     bluetoothFragment.setMenuIcon(item);
@@ -147,8 +159,9 @@ public class MainActivity extends BaseActivity<MainActivity> {
                     title = oldTitle;
                     TabLayoutUtils.enableTabs( mTabLayout, true );
                     mTabLayout.getTabAt(mSelectPosition).setIcon(mBtnActive[mSelectPosition]);
+                    ft.remove(bluetoothFragment);
+                    bluetoothFragment = null;
                 }
-//                HodooUtil.changeDrawableColor( d, color);
                 this.setTitleBar(title);
                 break;
             /* menu button click (e) */
@@ -159,5 +172,34 @@ public class MainActivity extends BaseActivity<MainActivity> {
             /* menu setting click (e) */
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkGPSState();
+    }
+    private void checkGPSState () {
+        HodooUtil.GPSCheck(this, new HodooUtil.AlertCallback() {
+            @Override
+            public void setNegativeButton(DialogInterface dialog, int which) {
+
+            }
+
+            @Override
+            public void setPositiveButton(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivityForResult(intent, HodooConstant.GPS_SETTING_REQUEST_CODE);
+                dialog.cancel();
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if ( requestCode == HodooConstant.GPS_SETTING_REQUEST_CODE ) {
+            checkGPSState();
+        }
     }
 }

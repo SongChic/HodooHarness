@@ -2,6 +2,8 @@ package com.animal.harness.hodoo.hodooharness.activity.chart;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.CornerPathEffect;
@@ -55,13 +57,11 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
     private float tx = 0, ty = 0;
 
     public GraphView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public GraphView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        mContext = context;
-        init();
+        this(context, attrs, 0);
     }
 
     public GraphView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -96,37 +96,44 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.e(TAG, "draw");
-        if ( mBaseDatas.size() == 0 ) return;
 
-
-
+//        for ( int i = 0; i < mBaseDatas.size(); i++ ) {
+//            mBaseDatas.get(i).setY( mBaseDatas.get(i).getY() - 1f );
+//        }
         for ( int i = 0; i < mDatas.size(); i++ ) {
             if (mBaseDatas.get(i).getY() >= mDatas.get(i).getY()) {
                 mBaseDatas.get(i).setY( mBaseDatas.get(i).getY() - 8 );
             }
         }
-        if ( mBaseDatas.get(maxIndex).getY() <= mDatas.get(maxIndex).getY() )
-            animState = false;
 
-        Paint paint = new Paint();
+
         Path path = new Path();
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.parseColor("#ee6156"));
-        paint.setShader(new LinearGradient(0,0,0, minY + 500, Color.parseColor("#ee6156"),0xffffffff, Shader.TileMode.CLAMP));
-        paint.setDither(true);                    // set the dither to true
-        paint.setStyle(Paint.Style.FILL);       // set to STOKE
-        paint.setStrokeJoin(Paint.Join.ROUND);    // set the join to round you want
-        paint.setStrokeCap(Paint.Cap.ROUND);      // set the paint cap to round too
-        paint.setPathEffect(new CornerPathEffect(200) );   // set the path effect when they join.
-        paint.setAntiAlias(true);
-        path.moveTo(mPadding, minY);
-        for (int i = 0; i < mBaseDatas.size(); i++)
+        path.moveTo(0, minY + 100);
+        for ( int i = 0; i < mBaseDatas.size(); i++ ) {
             path.lineTo(mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY());
+        }
+        path.lineTo(xWidth * mBaseDatas.size(), minY + 100); //1856
+        path.close();
 
-        path.lineTo(mBaseDatas.size() * x, minY);
+        Paint testPaint = new Paint();
+        testPaint.setColor(Color.YELLOW);
+        testPaint.setStyle(Paint.Style.FILL);
+        testPaint.setStrokeWidth(10);
+        testPaint.setDither(true);
+        testPaint.setShader(new LinearGradient(0,maxY,0, minY, Color.parseColor("#ee6156"),0xffffffff, Shader.TileMode.CLAMP));
+        testPaint.setStrokeJoin(Paint.Join.ROUND);    // set the join to round you want
+        testPaint.setStrokeCap(Paint.Cap.ROUND);      // set the paint cap to round too
+        testPaint.setPathEffect(new CornerPathEffect(200) );   // set the path effect when they join.
+        testPaint.setAntiAlias(true);
 
-        canvas.drawPath(path, paint);
+        Path testPath = new Path();
+        testPath.moveTo(100, 100);
+        testPath.lineTo(200, 100);
+        testPath.lineTo(200, 200);
+        testPath.lineTo(100, 200);
+        testPath.close();
+
+        canvas.drawPath(path, testPaint);
 
         Paint pointPaint = new Paint();
         pointPaint.setColor(Color.parseColor("#ee6156"));
@@ -166,8 +173,8 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
 
             }
 
-            canvas.drawPoint( mBaseDatas.get(i).getX(), pointY, pointStrokePaint );
-            canvas.drawPoint( mBaseDatas.get(i).getX(), pointY, pointPaint );
+            canvas.drawPoint( mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY(), pointStrokePaint );
+            canvas.drawPoint( mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY(), pointPaint );
             preY = mBaseDatas.get(i).getY();
         }
         /* set point (e) */
@@ -189,25 +196,24 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
             tPaint.setColor(mContext.getResources().getColor(R.color.hodoo_menu_active));
             canvas.drawRoundRect(rectF, 10, 10, tPaint);
 
-            /* 삼각형 */
-            tPaint = new Paint();
-            tPaint.setStyle(Paint.Style.FILL);
-            tPaint.setColor(mContext.getResources().getColor(R.color.hodoo_menu_active));
-            path = new Path();
-            path.moveTo(tx - 20, ty);
-            path.lineTo((tx - 20) + 20, ty + 20);
-            path.lineTo((tx - 20) + 40, ty);
-            path.close();
-//            path.lineTo(tx + 50, ty + 50);
-            path.close();
-            canvas.drawPath(path, tPaint);
+//            /* 삼각형 */
+//            tPaint = new Paint();
+//            tPaint.setStyle(Paint.Style.FILL);
+//            tPaint.setColor(mContext.getResources().getColor(R.color.hodoo_menu_active));
+//            path = new Path();
+//            path.moveTo(tx - 20, ty);
+//            path.lineTo((tx - 20) + 20, ty + 20);
+//            path.lineTo((tx - 20) + 40, ty);
+//            path.close();
+////            path.lineTo(tx + 50, ty + 50);
+//            path.close();
+//            canvas.drawPath(path, tPaint);
         }
 
         /* 데이터가 없을 시 */
         if ( mDataCheckState ) {
             canvas.drawText("데이터가 없습니다.", 300, 300, new Paint());
         }
-
     }
     public void setWidth( int width, int bottomPadding ) {
         mDeviceWidth = width;

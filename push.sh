@@ -31,6 +31,9 @@ fi
 
 echo "git start"
 
+echo "$commit"
+echo "$branch"
+
 git add .
 git commit -m "$commit"
 git push origin $branch

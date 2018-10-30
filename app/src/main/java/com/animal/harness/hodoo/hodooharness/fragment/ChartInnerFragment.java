@@ -153,7 +153,7 @@ public class ChartInnerFragment extends BaseFragment {
 
         long min = totalTime / 60 / 1000;
         long hour = min / 60;
-        minView.setText(String.valueOf( min + (hour * 10) ));
+        minView.setText(String.valueOf( min ));
         meterView.setText(String.valueOf(Math.round(totalDistance)));
         kmhView.setText(String.format("%.1f", kmh));
     }
