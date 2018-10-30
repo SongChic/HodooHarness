@@ -1,57 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <TextView
-        android:gravity="center"
-        android:layout_marginTop="47dp"
-        android:id="@+id/bluetooth_info"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""/>
-
-    <LinearLayout
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="118dp"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <data>
+        <variable
+            name="fragment"
+            type="com.animal.harness.hodoo.hodooharness.fragment.BluetoothFragment"/>
+    </data>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         >
-        <ImageView
-            android:layout_marginRight="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/bluetooth_alert"
-            android:layout_gravity="center_vertical"/>
-        <com.github.ybq.android.spinkit.SpinKitView
-            android:id="@+id/spin_kit"
-            style="@style/SpinKitView.ThreeBounce"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:SpinKit_Color="#aaaaaa" />
-    </LinearLayout>
 
-    <ImageView
-        android:id="@+id/harness_icon"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="165dp"
-        android:src="@drawable/harness"
-        android:layout_width="126dp"
-        android:layout_height="43dp" />
+        <com.ssomai.android.scalablelayout.ScalableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            app:scale_base_width="360"
+            app:scale_base_height="580">
+            <TextView
+                android:gravity="center"
+                android:id="@+id/bluetooth_info"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#666666"
+                app:scale_top="47"
+                app:scale_width="360"
+                app:scale_textsize="16"
+                android:text=""/>
+            <LinearLayout
+                android:layout_centerHorizontal="true"
+                app:scale_top="118"
+                app:scale_left="136"
+                app:scale_width="100"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
 
-    <ImageButton
-        android:id="@+id/bluetooth_refresh"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
-        android:layout_below="@+id/harness_icon"
-        android:src="@drawable/bluetooth_refresh"
-        android:background="?android:attr/selectableItemBackground"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+                <ImageView
+                    android:layout_marginRight="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/bluetooth_alert"
+                    android:layout_gravity="center_vertical"/>
+                <com.github.ybq.android.spinkit.SpinKitView
+                    android:id="@+id/spin_kit"
+                    style="@style/SpinKitView.ThreeBounce"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:SpinKit_Color="#aaaaaa" />
+            </LinearLayout>
 
-</RelativeLayout>
+            <ImageView
+                android:id="@+id/harness_icon"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="165dp"
+                android:src="@drawable/harness"
+                app:scale_top="185"
+                app:scale_left="92"
+                app:scale_width="176"
+                app:scale_height="93"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                app:scale_top="280"
+                app:scale_left="130"
+                app:scale_width="100"
+                app:scale_height="32"
+                android:id="@+id/bluetooth_refresh"
+                android:src="@drawable/bluetooth_refresh"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{fragment::onClick}"
+                />
+            <ExpandableListView
+                android:id="@+id/bluetooth_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:scale_width="360"
+                app:scale_height="250"
+                app:scale_top="330"/>
+
+        </com.ssomai.android.scalablelayout.ScalableLayout>
+
+    </RelativeLayout>
+</layout>

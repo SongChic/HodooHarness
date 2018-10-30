@@ -4,6 +4,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/info_wrap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#fff"
@@ -30,6 +31,12 @@
             android:layout_height="wrap_content"/>
 
     </RelativeLayout >
+
+    <TextView
+        android:layout_below="@+id/info_wrap"
+        android:id="@+id/info_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <com.animal.harness.hodoo.hodooharness.view.StopWatch
         android:id="@+id/stop_watch"
