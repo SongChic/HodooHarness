@@ -74,19 +74,22 @@ public class DBHelper extends SQLiteOpenHelper {
         return datas;
     }
     public List<GPSData> selectDBForWhere ( String where ) {
-        String sql = mContext.getResources().getString(R.string.base_select) + " " + mContext.getResources().getString(R.string.base_db_name) + " where " + where;
-        SQLiteDatabase db = getReadableDatabase();
-        List<GPSData> datas = new ArrayList<>();
-        Cursor cursor = db.rawQuery(sql, null);
-        while ( cursor.moveToNext() ) {
-            GPSData data = new GPSData();
-            data.setId(cursor.getInt(0) );
-            data.setCreated( cursor.getLong(1) );
-            data.setTotal_time(cursor.getLong(2));
-            data.setSum( cursor.getDouble(3) );
-            datas.add(data);
+        if ( mContext != null ) {
+            String sql = mContext.getResources().getString(R.string.base_select) + " " + mContext.getResources().getString(R.string.base_db_name) + " where " + where;
+            SQLiteDatabase db = getReadableDatabase();
+            List<GPSData> datas = new ArrayList<>();
+            Cursor cursor = db.rawQuery(sql, null);
+            while ( cursor.moveToNext() ) {
+                GPSData data = new GPSData();
+                data.setId(cursor.getInt(0) );
+                data.setCreated( cursor.getLong(1) );
+                data.setTotal_time(cursor.getLong(2));
+                data.setSum( cursor.getDouble(3) );
+                datas.add(data);
+            }
+            return datas;
         }
-        return datas;
+        return null;
     }
     public void resetDB() {
         SQLiteDatabase db = getWritableDatabase();

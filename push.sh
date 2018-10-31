@@ -9,7 +9,6 @@ then
 	if [ "$REPLY" != "Y" -a "$REPLY" != "y" ]
 	then
 		read -p "commit 내용을 입력해주세요 : " commit
-		commit=$REPLY
 		echo -e "\n$commit"
 	fi
 	#exit
