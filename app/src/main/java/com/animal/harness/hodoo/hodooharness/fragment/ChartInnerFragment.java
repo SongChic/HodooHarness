@@ -135,6 +135,8 @@ public class ChartInnerFragment extends BaseFragment {
         long totalTime = 0;
         double totalDistance = 0;
 
+        if ( datas == null )
+            return;
         for ( int i = 0; i < datas.size(); i++ ) {
             totalTime += datas.get(i).getTotal_time();
             totalDistance += datas.get(i).getSum();
@@ -226,6 +228,7 @@ public class ChartInnerFragment extends BaseFragment {
         mStartDate = date;
         if ( mGraphView != null )
             setData();
+        calculation();
         Log.e(TAG, "setDate");
         Log.e(TAG, fullSdf.format(new Date(date)));
     }

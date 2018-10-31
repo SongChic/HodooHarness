@@ -99,6 +99,7 @@ public class BluetoothFragment extends BaseFragment implements Runnable {
         adapter = BluetoothAdapter.getDefaultAdapter();
         if ( adapter == null ) {
             bluetoothInfo.setText("해당 기기에서는 블루투스를\n사용 할 수 없습니다.");
+            binding.spinKit.setVisibility(View.INVISIBLE);
 //            HodooUtil.changeDrawableColor(mItem.getIcon(), ContextCompat.getColor(getContext(), R.color.hodoo_menu_default));
             Toast.makeText(getContext(), "블루투스를 사용 할 수 없는 기기입니다.", Toast.LENGTH_SHORT).show();
         } else {
@@ -415,7 +416,7 @@ public class BluetoothFragment extends BaseFragment implements Runnable {
                                 }
                             }
                         });
-                        break;
+                        return;
                     }
                 } else if ( !mState && mDevice.getBondState() != BluetoothDevice.BOND_BONDED ) {
                     BluetoothFragment.this.getActivity().runOnUiThread(new Runnable() {
@@ -433,7 +434,7 @@ public class BluetoothFragment extends BaseFragment implements Runnable {
                             }
                         }
                     });
-                    break;
+                    return;
                 }
 //                else if ( !mState && mDevice.getBondState() == BluetoothDevice.BOND_NONE ) {
 
@@ -445,19 +446,19 @@ public class BluetoothFragment extends BaseFragment implements Runnable {
                     e.printStackTrace();
                 }
             }
-//            BluetoothFragment.this.getActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    List<BluetoothItem> target = mState ? pairList : items;
-//                    for ( int i = 0; i < target.size(); i++ ) {
-//                        if ( target.get(i).getAddress().equals(mDevice.getAddress()) ) {
-//                            target.get(i).setStateStr("");
-//                            btListAdapter.notifyDataSetChanged();
-//                            break;
-//                        }
-//                    }
-//                }
-//            });
+            BluetoothFragment.this.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    List<BluetoothItem> target = mState ? items : pairList;
+                    for ( int i = 0; i < target.size(); i++ ) {
+                        if ( target.get(i).getAddress().equals(mDevice.getAddress()) ) {
+                            target.get(i).setStateStr("");
+                            btListAdapter.notifyDataSetChanged();
+                            break;
+                        }
+                    }
+                }
+            });
             super.run();
         }
     }
