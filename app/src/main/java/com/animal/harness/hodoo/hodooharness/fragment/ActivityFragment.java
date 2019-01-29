@@ -47,15 +47,17 @@ import com.animal.harness.hodoo.hodooharness.util.DBHelper;
 import com.animal.harness.hodoo.hodooharness.util.HodooUtil;
 import com.animal.harness.hodoo.hodooharness.view.StopWatch;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import static com.animal.harness.hodoo.hodooharness.constant.HodooConstant.LOCATION_DB_NAME;
 
 public class ActivityFragment extends BaseFragment implements View.OnClickListener, Runnable {
     private StopWatch stopWatch;
     private Button stopWatchStart, stopWatchReset;
-    private TextView tipsIcon, tipsContent, infoText;
+    private TextView tipsIcon, tipsContent;
     private int count = 0, j = 0;
     private boolean restartState = false;
     private DBHelper helper;
@@ -125,7 +127,6 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
             RelativeLayout btnWrap = wrap.findViewById(R.id.stop_watch_btn);
             tipsIcon = wrap.findViewById(R.id.tips);
             tipsContent = wrap.findViewById(R.id.tips_content);
-            infoText = wrap.findViewById(R.id.info_text);
 
             tipsIcon.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -324,7 +325,6 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                             HodooConstant.MIN_DISTANCE,
                             mLocationListener //리스너 연결
                     );
-                infoText.setText("ON");
             }
             try {
                 Thread.sleep(1000);
@@ -399,16 +399,7 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        helper = new DBHelper(
-                getContext(),
-                LOCATION_DB_NAME,
-                null,
-                1
-        );
-    }
+
 
     public void start() {
         if (locationManager != null) {
@@ -440,7 +431,6 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                             .sum(0)
                             .created(new Date().getTime())
                             .build();
-                infoText.setText("ON");
             } else {
                 if (data == null)
                     data = GPSData.builder()
@@ -450,7 +440,6 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                             .build();
                 checkThread = new Thread(this);
                 checkThread.start();
-                infoText.setText("OFF");
                 return;
             }
         }
@@ -458,7 +447,6 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
 
     protected boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
-            // 기존의 위치 정보가 없다면 새로운게 좋은것이다.
             return true;
         }
         long timeDelta = location.getTime() - currentBestLocation.getTime();
@@ -516,6 +504,654 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
             i++;
         }
         return j;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        helper = new DBHelper(
+                getContext(),
+                LOCATION_DB_NAME,
+                null,
+                1
+        );
+//        addData();
+    }
+
+    public void addData() {
+        List<GPSData> datas = new ArrayList<>();
+
+
+        GPSData data = null;
+
+
+        datas = getData(datas);
+
+
+
+        for (int i = 0; i < datas.size(); i++) {
+            helper.insertDB(datas.get(i));
+        }
+    }
+    public List<GPSData> getData ( List<GPSData> datas ) {
+        String longData = "1545922800000";
+        GPSData tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(54000000)
+                .sum(1)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1545922800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(5400000)
+                .sum(3000)
+                .type(0)
+                .build();
+        datas.add(tempData);
+        longData = "1545922800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(27000000)
+                .sum(2)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1546009200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(46800000)
+                .sum(5)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1546009200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(39600000)
+                .sum(2)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1546095600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(54000000)
+                .sum(1)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1546095600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(32400000)
+                .sum(3)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1546182000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(43200000)
+                .sum(1)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1546182000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(43200000)
+                .sum(6)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1546268400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(7200000)
+                .sum(4500)
+                .type(0)
+                .build();
+        datas.add(tempData);
+        longData = "1546268400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(57600000)
+                .sum(1)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1546268400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(21600000)
+                .sum(7)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1546354800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(46800000)
+                .sum(1)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1546354800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(39600000)
+                .sum(3)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1546441200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(7200000)
+                .sum(4000)
+                .type(0)
+                .build();
+        datas.add(tempData);
+        longData = "1546441200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(57600000)
+                .sum(5)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1546441200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(21600000)
+                .sum(10)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1546527600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(57600000)
+                .sum(8)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1546527600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(28800000)
+                .sum(10)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1546614000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(3600000)
+                .sum(2000)
+                .type(0)
+                .build();
+        datas.add(tempData);
+        longData = "1546614000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(36000000)
+                .sum(8)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1546614000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(46800000)
+                .sum(2)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1546700400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(43200000)
+                .sum(9)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1546700400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(43200000)
+                .sum(3)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1546786800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(32400000)
+                .sum(3500)
+                .type(0)
+                .build();
+        datas.add(tempData);
+        longData = "1546786800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(50400000)
+                .sum(9)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1546786800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(3600000)
+                .sum(3)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1546873200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(28800000)
+                .sum(7)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1546873200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(57600000)
+                .sum(2)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1546959600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(43200000)
+                .sum(7)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1546959600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(43200000)
+                .sum(2)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547046000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(32400000)
+                .sum(7)
+                .type(0)
+                .build();
+        datas.add(tempData);
+        longData = "1547046000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(50400000)
+                .sum(2)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547046000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(3600000)
+                .sum(2)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547132400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(39600000)
+                .sum(7)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1547132400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(46800000)
+                .sum(2)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547218800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(36000000)
+                .sum(7)
+                .type(0)
+                .build();
+        datas.add(tempData);
+        longData = "1547218800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(43200000)
+                .sum(2)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547218800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(7200000)
+                .sum(2)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547305200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(3600000)
+                .sum(3000)
+                .type(0)
+                .build();
+        datas.add(tempData);
+        longData = "1547305200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(54000000)
+                .sum(2)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1547305200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(28800000)
+                .sum(5)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547391600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(39600000)
+                .sum(7)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1547391600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(46800000)
+                .sum(2)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547478000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(43200000)
+                .sum(7)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1547478000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(43200000)
+                .sum(2)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547564400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(39600000)
+                .sum(2)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1547564400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(46800000)
+                .sum(7)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547650800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(7200000)
+                .sum(2500)
+                .type(0)
+                .build();
+        datas.add(tempData);
+        longData = "1547650800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(32400000)
+                .sum(2)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1547650800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(46800000)
+                .sum(5)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547737200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(43200000)
+                .sum(1)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1547737200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(43200000)
+                .sum(7)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547823600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(7200000)
+                .sum(3000)
+                .type(0)
+                .build();
+        datas.add(tempData);
+        longData = "1547823600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(36000000)
+                .sum(1)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1547823600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(50400000)
+                .sum(3)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547910000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(32400000)
+                .sum(2)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1547910000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(54000000)
+                .sum(5)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1547996400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(32400000)
+                .sum(7)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1547996400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(54000000)
+                .sum(2)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1548082800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(32400000)
+                .sum(7)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1548082800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(54000000)
+                .sum(7)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1548169200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(3600000)
+                .sum(3000)
+                .type(0)
+                .build();
+        datas.add(tempData);
+        longData = "1548169200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(36000000)
+                .sum(1)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1548169200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(50400000)
+                .sum(3)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1548255600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(3600000)
+                .sum(4500)
+                .type(0)
+                .build();
+        datas.add(tempData);
+        longData = "1548255600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(32400000)
+                .sum(3)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1548255600000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(50400000)
+                .sum(1)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1548342000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(43200000)
+                .sum(7)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1548342000000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(43200000)
+                .sum(2)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1548428400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(7200000)
+                .sum(2500)
+                .type(0)
+                .build();
+        datas.add(tempData);
+        longData = "1548428400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(36000000)
+                .sum(1)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1548428400000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(50400000)
+                .sum(3)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1548514800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(57600000)
+                .sum(2)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1548514800000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(21600000)
+                .sum(5)
+                .type(2)
+                .build();
+        datas.add(tempData);
+        longData = "1548601200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(57600000)
+                .sum(7)
+                .type(1)
+                .build();
+        datas.add(tempData);
+        longData = "1548601200000";
+        tempData = GPSData.builder()
+                .created(Long.parseLong(longData))
+                .total_time(32400000)
+                .sum(2)
+                .type(2)
+                .build();
+        datas.add(tempData);
+
+        return datas;
     }
 
 }

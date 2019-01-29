@@ -12,12 +12,21 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.animal.harness.hodoo.hodooharness.activity.gps.GPSActivity;
 import com.animal.harness.hodoo.hodooharness.base.BaseActivity;
+import com.animal.harness.hodoo.hodooharness.domain.GPSData;
 import com.animal.harness.hodoo.hodooharness.util.DBHelper;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static com.animal.harness.hodoo.hodooharness.constant.HodooConstant.DEBUG;
 import static com.animal.harness.hodoo.hodooharness.constant.HodooConstant.LOCATION_DB_NAME;
 import static com.animal.harness.hodoo.hodooharness.constant.HodooConstant.PERMISSIONS;
 import static com.animal.harness.hodoo.hodooharness.constant.HodooConstant.PERMISSION_REQUEST_CODE;
@@ -51,6 +60,7 @@ public class Splash extends BaseActivity<Splash> {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -114,7 +124,7 @@ public class Splash extends BaseActivity<Splash> {
                 }
             }).create().show();
 
-        }else if((gpsEnabled.matches(".*gps.*") && gpsEnabled.matches(".*network.*"))) {
+        } else if((gpsEnabled.matches(".*gps.*") && gpsEnabled.matches(".*network.*"))) {
             Toast.makeText(getApplicationContext(), "정보를 읽어오는 중입니다.", Toast.LENGTH_LONG).show();
 //            intent = new Intent(this, CurrentLocatinActivity.class); //현재 위치 화면 띄우기 위해 인텐트 실행.
 //            startActivity(intent);

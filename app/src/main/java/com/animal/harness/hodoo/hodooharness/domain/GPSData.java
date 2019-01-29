@@ -13,6 +13,7 @@ public class GPSData {
     private long total_time;
     private double sum;
     private long created;
+    private int type;
     public GPSData () {
     }
 }
