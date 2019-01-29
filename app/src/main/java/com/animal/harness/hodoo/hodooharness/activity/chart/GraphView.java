@@ -173,8 +173,8 @@ public class GraphView extends BaseView<GraphView> implements Runnable {
 
             }
 
-            canvas.drawPoint( mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY(), pointStrokePaint );
-            canvas.drawPoint( mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY(), pointPaint );
+            canvas.drawPoint( mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY() + 100, pointStrokePaint );
+            canvas.drawPoint( mBaseDatas.get(i).getX(), mBaseDatas.get(i).getY() + 100, pointPaint );
             preY = mBaseDatas.get(i).getY();
         }
         /* set point (e) */

@@ -33,6 +33,7 @@
             android:paddingBottom="10dp"
             />
         <include
+            android:visibility="invisible"
             android:id="@+id/include_layout"
             layout="@layout/layout_floating"
             android:layout_width="match_parent"

@@ -27,14 +27,16 @@ public class DBHelper extends SQLiteOpenHelper {
         mName = name;
     }
 
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         StringBuffer sb = new StringBuffer();
         sb.append(" CREATE TABLE " + mName + " (");
-        sb.append(" ID INTEGER PRIMARY KEY AUTOINCREMENT, "); //인덱스
-        sb.append(" CREATED DATETIME, "); //작성일
-        sb.append(" TOTAL_TIME INTEGER, "); //총 이동시간
-        sb.append(" TOTAL_DISTANCE INTEGER ); "); //총 이동거리
+        sb.append(" ID INTEGER PRIMARY KEY AUTOINCREMENT, ");   //인덱스
+        sb.append(" CREATED DATETIME, ");                       //작성일
+        sb.append(" TOTAL_TIME INTEGER, ");                     //총 이동시간
+        sb.append(" TOTAL_DISTANCE INTEGER, ");                 //총 이동거리
+        sb.append(" TYPE INTEGER DEFAULT 0 );");                //타입 ( 0 : 실외 활동, 1 : 실내 활동, 2 : 휴식)
         db.execSQL(sb.toString());
         Log.e(TAG, "데이터베이스 생성 완료");
     }
@@ -47,14 +49,15 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         StringBuffer sb = new StringBuffer();
         sb.append("INSERT INTO " + mName);
-        sb.append(" (TOTAL_TIME, CREATED, TOTAL_DISTANCE )");
-        sb.append(" VALUES (?, ?, ?)");
+        sb.append(" (TOTAL_TIME, CREATED, TOTAL_DISTANCE, TYPE )");
+        sb.append(" VALUES (?, ?, ?, ?)");
         db.execSQL(
                 sb.toString(),
                 new Object[]{
                       data.getTotal_time(),
                       data.getCreated(),
-                      data.getSum()
+                      data.getSum(),
+                      data.getType()
                 }
         );
     }
@@ -85,6 +88,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 data.setCreated( cursor.getLong(1) );
                 data.setTotal_time(cursor.getLong(2));
                 data.setSum( cursor.getDouble(3) );
+                data.setType( cursor.getInt(4) );
                 datas.add(data);
             }
             return datas;

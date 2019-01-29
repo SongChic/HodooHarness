@@ -51,7 +51,7 @@ public class ChartInnerFragment extends BaseFragment {
         return wrap;
     }
     private void init() {
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(HodooUtil.dpToPx(getContext(), 70), HodooUtil.dpToPx(getContext(), 70));
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(HodooUtil.dpToPx(getContext(), 100), HodooUtil.dpToPx(getContext(), 100));
 
         cahrtTexts = getResources().getStringArray(R.array.chart_text);
         for ( int i = 0; i < 3; i++ ) {

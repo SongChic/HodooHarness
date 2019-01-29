@@ -7,4 +7,5 @@ public abstract class BaseFragment extends Fragment {
     public BaseFragment(){}
     public abstract void onFragmentSelected();
     public void onFragmentSelected( int position ) {}
+    public void setDate(long date){}
 }

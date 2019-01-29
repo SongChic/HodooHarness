@@ -54,6 +54,8 @@ public class ChartFragment extends BaseFragment implements View.OnClickListener 
     ValueAnimator  colorAnimation;
     ObjectAnimator textColorAnimation;
 
+    private int selectedPosition = 0;
+
     public ChartFragment () {}
 
     @Override
@@ -115,7 +117,9 @@ public class ChartFragment extends BaseFragment implements View.OnClickListener 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 binding.chartViewpager.setCurrentItem(tab.getPosition());
+                fragments[tab.getPosition()].setDate( binding.dayView.getDate() );
                 adapter.refresh(tab.getPosition());
+                selectedPosition = tab.getPosition();
             }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {}
@@ -129,7 +133,7 @@ public class ChartFragment extends BaseFragment implements View.OnClickListener 
         binding.dayView.setCallback(new DaysHorizontalView.Callback() {
             @Override
             public void onChange(int state, int position) {
-                ((ChartInnerFragment) fragments[0]).setDate(binding.dayView.getDate());
+                fragments[selectedPosition].setDate(binding.dayView.getDate());
             }
 
             @Override
@@ -163,7 +167,7 @@ public class ChartFragment extends BaseFragment implements View.OnClickListener 
         pieHelperArrayList.add(new PieHelper(8f));
 
         binding.includeLayout.fab.setOnClickListener(this);
-        binding.includeLayout.fab1.setOnClickListener(this);
+//        binding.includeLayout.fab1.setOnClickListener(this);
 
         return binding.getRoot();
     }
